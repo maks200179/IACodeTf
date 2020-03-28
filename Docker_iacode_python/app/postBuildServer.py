@@ -161,9 +161,9 @@ class postBuildServer(configFileIni):
 
     def checkServerIfOnlineTimer(self):
         test = 0
-        timeout = time.time() + 60 * 5  # 5 minutes from now
+        timeout = time.time() + 60 * 7  # 5 minutes from now
         while (self.mainExecCMD('cmdCheckServerOnline')) == '':
-            time.sleep(5)
+            time.sleep(7)
             if test == 15 or time.time() > timeout:
                 return False
             test = test + 1
