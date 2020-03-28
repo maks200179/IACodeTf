@@ -15,5 +15,5 @@ cd /usr/src/aic/ && python3  MainWindowsServer.py
 
 or:
 
-ssh -X  root@docker_host_ip -p 52 'cd /usr/src/iac/ && python3  MainWindowsIac.py'
+ssh -X  root@docker_host_ip -p 72 'cd /usr/src/iac/ && python3  MainWindowsIac.py'
 ```
