@@ -7,7 +7,7 @@ DIR=$(dirname "$(readlink -f "$0")")
 
 
 
-if  [[ ! -f /iacode_data_data/MainWindowsIac.py ]] || [[ ! -d  /iacode_data ]] ; then
+if  [[ ! -f /iacode_data/MainWindowsIac.py ]] || [[ ! -d  /iacode_data ]] ; then
     #echo 'not'
     mkdir /iacode_data
     cp -fr "${DIR}"/app/* /iacode_data/
