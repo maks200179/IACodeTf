@@ -11,7 +11,7 @@ To run app:
 
 Connect to docker via ssh port 52 with X server.
 Run the file after sessiion established with X server. 
-cd /usr/src/aic/ && python3  MainWindowsServer.py 
+cd /usr/src/iacode/ && python3  MainWindowsIac.py 
 
 or:
 
