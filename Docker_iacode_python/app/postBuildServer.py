@@ -35,24 +35,41 @@ class postBuildServer(configFileIni):
         self.fileRepoListToDeploy = '%s/repository_module_list.json' % (self.main_module_workspace)
         
 
-
+    #aws creds from file
     def collectAWSCredentials(self):
         #make sure the file exist and collect aws creds
         filePatch         = '%s/moduls/kubernetes/aws_credentials.json' % (self.detectFileDir())
         if not os.path.isfile(filePatch):
             return False
+        
         json_data              = self.fileGetContentsJson(filePatch)
         self.aws_region        = json_data["region"]
         self.aws_access_key    = json_data["access_key"]
         self.aws_secret_key    = json_data["secret_key"]
         
+        if len(self.aws_region) == 0 or len(self.aws_access_key) == 0 or len(self.aws_secret_key) == 0 :
+            return False 
+
+    #aws creds from app  
+    def getAwsCredsFromConfig(self):
+        self.aws_region        = self.read_conf_file('AWS', 'region')
+        self.aws_access_key    = self.read_conf_file('AWS', 'accesskey')
+        self.aws_secret_key    = self.read_conf_file('AWS', 'secretkey')
+        
+        if len(self.aws_region) == 0 or len(self.aws_access_key) == 0 or len(self.aws_secret_key) == 0 :
+            return False
+        
+
 
     def exportEnvAwsCredentials(self):
             stdout = self.collectAWSCredentials()
             if stdout is False:
-                msg = 'App: The aws credential file not exist or cant find the json in root of repository' 
-                self.logging.writeLogWarning(msg)
-                return msg
+                #try to get from  config 
+                stdout = self.getAwsCredsFromConfig()
+                if stdout is False:
+                    msg = 'App: The aws credential file not exist or cant find the json in root of repository and also cant read creds from config' 
+                    self.logging.writeLogWarning(msg)
+                    return msg
             else:  
                 
                 os.environ["AWS_ACCESS_KEY_ID"]="%s"     %(self.aws_access_key)
