@@ -13,7 +13,7 @@ class gitHubCopyRepo(configFileIni):
         self.logging = loggingGlobal()
 
     def setVarsToFunctionSelf(self):
-        self.repository_workspace = '%s/moduls/%s' % (self.detectFileDir(),self.git_module_name)
+        self.repository_workspace = '%s/moduls/%s' % (self.detectFileDir(),'iacode')
         self.terraform_dir = '%s/terraform' % (self.detectFileDir())
 
 

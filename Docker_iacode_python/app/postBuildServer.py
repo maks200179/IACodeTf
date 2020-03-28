@@ -22,13 +22,13 @@ class postBuildServer(configFileIni):
     def setVarsToFunctionSelf(self,module):
         
         self.git_link = self.read_conf_file("Git", "ssh_link")
-        self.git_module_name = (self.git_link.split('/')[1]).replace(".git", "")
+        self.iacode_module_name = 'iacode'
 
         self.terraform_data =  '%s/terraform/modules_data' %(self.detectFileDir())
         self.terraform_modules_data = '%s/%s' %(self.terraform_data,module)
 
         self.modules_work_space    = '%s/moduls/' % (self.detectFileDir())
-        self.main_module_workspace = '%s/moduls/%s/%s' % (self.detectFileDir(),self.git_module_name,module)
+        self.main_module_workspace = '%s/moduls/%s/%s' % (self.detectFileDir(),self.iacode_module_name,module)
         
         self.excluded_directoryes = 'certbot/log/*'
 
@@ -62,25 +62,26 @@ class postBuildServer(configFileIni):
 
 
     def exportEnvAwsCredentials(self):
-            stdout = self.collectAWSCredentials()
-            if stdout is False:
+            stdout_file = self.collectAWSCredentials()
+            if stdout_file is False:
                 #try to get from  config 
-                stdout = self.getAwsCredsFromConfig()
-                if stdout is False:
-                    msg = 'App: The aws credential file not exist or cant find the json in root of repository and also cant read creds from config' 
-                    self.logging.writeLogWarning(msg)
-                    return msg
-            else:  
+                stdout_config = self.getAwsCredsFromConfig()
+            elif stdout_config is False:
+                msg = 'App: The aws credential file not exist or cant find the json in root of repository and also cant read creds from config' 
+                self.logging.writeLogWarning(msg)
+                return msg
+            
+            
                 
-                os.environ["AWS_ACCESS_KEY_ID"]="%s"     %(self.aws_access_key)
-                os.environ["AWS_SECRET_ACCESS_KEY"]="%s" %(self.aws_secret_key)
-                os.environ["AWS_DEFAULT_REGION"]="%s"    %(self.aws_region)
+            os.environ["AWS_ACCESS_KEY_ID"]="%s"     %(self.aws_access_key)
+            os.environ["AWS_SECRET_ACCESS_KEY"]="%s" %(self.aws_secret_key)
+            os.environ["AWS_DEFAULT_REGION"]="%s"    %(self.aws_region)
+            
+            #print(os.environ["AWS_ACCESS_KEY_ID"])
+            #print(os.environ["AWS_SECRET_ACCESS_KEY"])
+            #print(os.environ["AWS_DEFAULT_REGION"])
 
-                #print(os.environ["AWS_ACCESS_KEY_ID"])
-                #print(os.environ["AWS_SECRET_ACCESS_KEY"])
-                #print(os.environ["AWS_DEFAULT_REGION"])
-
-                return True
+            return True
 
     
    
@@ -207,9 +208,15 @@ class postBuildServer(configFileIni):
         self.git_ssh_branch = self.read_conf_file('Git', 'branch')
         self.git_repo_name = self.read_conf_file('Git', 'repository_name')
         self.deploy_git_key = self.read_conf_file('DeployGitInfo', 'ssh_key_path')
+        
+                
+        if self.git_ssh_link is None  or self.git_ssh_link is False:
+            msg = 'Cant read git section from config '
+            self.logging.writeLogCritical(msg)
+            print (msg)
+            sys.exit(1)
 
-
-
+            
 
 
     def copyTfMainModule(self):
