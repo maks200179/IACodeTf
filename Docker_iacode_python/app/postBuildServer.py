@@ -414,7 +414,7 @@ class postBuildServer(configFileIni):
         cmdExecDockerPs           = """ ssh -o "StrictHostKeyChecking=no" -o "ConnectTimeout=2" -i "%s" "%s@%s" "cd /var/%s   && sudo docker ps -a --format 'table {{.Names}}\t{{.Status}}\t{{.RunningFor}}'" """ % (self.ssh_key_path, self.user_name, self.server_ip, param)
         cmdInitSwarmManager       = """ ssh -o "StrictHostKeyChecking=no" -o "ConnectTimeout=2" -i "%s" "%s@%s" "sudo bash /var/%s/build.sh  --init_swarm_manager yes" """ % (self.ssh_key_path, self.user_name, self.server_ip, param)
         cmdTochToken              = """ touch %s """  % (param)
-        cmdConnectWorkerToManager = """ ssh -o "StrictHostKeyChecking=no" -o "ConnectTimeout=2" -i "%s" "%s@%s" "sudo bash /var/%s/build.sh --docker_env yes --worker_connect_to_manager %s" """ % (self.ssh_key_path, self.user_name, self.server_ip,param,param2)
+        cmdConnectWorkerToManager = """ ssh -o "StrictHostKeyChecking=no" -o "ConnectTimeout=2" -i "%s" "%s@%s" "sudo bash /var/%s/build.sh  --worker_connect_to_manager %s" """ % (self.ssh_key_path, self.user_name, self.server_ip,param,param2)
         cmdGetModuleNamesInstalled= """ ls %s """ % (self.terraform_data)
         cmdRebuildSwarmManager    = """ ssh -o "StrictHostKeyChecking=no" -o "ConnectTimeout=2" -i "%s" "%s@%s" "sudo bash /var/%s/build.sh --rebuild_swarm_manager yes" """ % (self.ssh_key_path, self.user_name, self.server_ip,param)
         cmdCheckServiceUpSwarm    = """ ssh -o "StrictHostKeyChecking=no" -o "ConnectTimeout=2" -i "%s" "%s@%s" "sudo bash /var/%s/build.sh --rebuild_swarm_manager yes" """ % (self.ssh_key_path, self.user_name, self.server_ip,param)
