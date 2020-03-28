@@ -177,26 +177,4 @@ EOF
     
     
 
-    if [[ $docker_compose_up == "yes" ]] ; then
     
-    
-    
-    
-    pass=$(cat "${DIR}"/dockerhub.info)  
-    sudo docker login -u maxfr1158 -p $pass  
-    #sudo chmod 775 "${DIR}"/build.sh
-
-        if  [[ ! -z $(yum list installed | grep docker-ce.x86_64) ]] && [[ ! -z $(docker-compose --version) ]] ; then
-            
-            #sudo docker swarm init
-            echo 'installed docker compose and docker'
-                
-        else 
-            
-            echo "docker-compose or docker not  installed on target server check logs."
-                
-        fi
-
-      
-    
-    fi  
