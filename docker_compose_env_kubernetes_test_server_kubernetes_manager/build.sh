@@ -9,6 +9,7 @@ while [[ ${1:0:2} == '--' ]] && [[ $# -ge 2 ]] ; do
     [[ $1 == '--init_swarm_manager' ]] && { init_swarm_manager="${2}"; };
     [[ $1 == '--rebuild_swarm_manager' ]] && { rebuild_swarm_manager="${2}"; };
     [[ $1 == '--install_db_crone_tab' ]] && { install_db_crone="${2}"; };
+    [[ $1 == '--install_kube' ]] && { install_kube="${2}"; };
     [[ $1 == '--set_host_name_master' ]] && { set_host_name_master="${2}"; };
     [[ $1 == '--worker_connect_to_manager' ]] && { ipaddr="${2}"; manager_token="${3}"; };
         shift 2 || break
@@ -71,22 +72,35 @@ EOF
         systemctl restart docker
         
         
-        #add kubernetes repo
-        cat <<EOF > /etc/yum.repos.d/kubernetes.repo
-        [kubernetes]
-        name=Kubernetes
-        baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
-        enabled=1
-        gpgcheck=1
-        repo_gpgcheck=1
-        gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
-EOF
-        
-        sudo yum install -y kubelet kubeadm kubectl
-        sudo systemctl enable kubelet   
-        sudo systemctl start kubelet 
+
         
     fi
+
+
+
+    if  [[ $install_kube == "yes" ]] ; then
+        if  [[ ! -z $(yum list installed | grep docker-ce.x86_64) ]] && [[ ! -z $(docker-compose --version) ]] ; then
+            #add kubernetes repo
+            cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+            [kubernetes]
+            name=Kubernetes
+            baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+            enabled=1
+            gpgcheck=1
+            repo_gpgcheck=1
+            gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+EOF
+        
+            sudo yum install -y kubelet kubeadm kubectl
+            sudo systemctl enable kubelet   
+            sudo systemctl start kubelet 
+                
+                
+        fi
+        
+    fi
+
+
 
 
 
