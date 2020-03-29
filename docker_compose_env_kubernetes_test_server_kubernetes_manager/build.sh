@@ -84,17 +84,8 @@ EOF
         
         
         
-        sudo yum install -y kubelet kubeadm kubectl
-        sudo systemctl enable kubelet   
-        sudo systemctl start kubelet 
         
         
-        
-
-        
-
-    fi
-
         if  [[ $set_host_name_master == "yes" ]] ; then
             if  [[ ! -z $(yum list installed | grep docker-ce.x86_64) ]] && [[ ! -z $(docker-compose --version) ]] ; then
                 sudo hostnamectl set-hostname master-node
@@ -108,7 +99,29 @@ EOF
                 
             fi
         
+        fi
+        
+        
+        
+        
+        
+        
+        sudo yum install -y kubelet kubeadm kubectl
+        sudo systemctl enable kubelet   
+        sudo systemctl start kubelet 
+        
+        
+        
+
+        
+
     fi
+
+
+
+
+
+
 
 
 
