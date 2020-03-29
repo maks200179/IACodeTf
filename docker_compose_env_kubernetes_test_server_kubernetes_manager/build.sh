@@ -82,12 +82,17 @@ EOF
         gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 EOF
         
+        sudo yum install -y kubelet kubeadm kubectl
+        sudo systemctl enable kubelet   
+        sudo systemctl start kubelet 
         
-        
-        
-        
-        if  [[ $set_host_name_master == "yes" ]] ; then
-            if  [[ ! -z $(yum list installed | grep docker-ce.x86_64) ]] && [[ ! -z $(docker-compose --version) ]] ; then
+    fi
+
+
+
+
+    if  [[ $set_host_name_master == "yes" ]] ; then
+        if  [[ ! -z $(yum list installed | grep docker-ce.x86_64) ]] && [[ ! -z $(docker-compose --version) ]] ; then
                 sudo hostnamectl set-hostname master-node
                 ipaddr=$(sudo curl http://169.254.169.254/latest/meta-data/local-ipv4) 
                 echo "${ipaddr}" "master-node" >> /etc/hosts
@@ -97,27 +102,9 @@ EOF
                 sudo echo '1' > /proc/sys/net/bridge/bridge-nf-call-iptables
                 
                 
-            fi
-        
         fi
         
-        
-        
-        
-        
-        
-        sudo yum install -y kubelet kubeadm kubectl
-        sudo systemctl enable kubelet   
-        sudo systemctl start kubelet 
-        
-        
-        
-
-        
-
     fi
-
-
 
 
 
