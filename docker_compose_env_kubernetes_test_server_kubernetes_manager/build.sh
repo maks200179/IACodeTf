@@ -9,6 +9,7 @@ while [[ ${1:0:2} == '--' ]] && [[ $# -ge 2 ]] ; do
     [[ $1 == '--init_swarm_manager' ]] && { init_swarm_manager="${2}"; };
     [[ $1 == '--rebuild_swarm_manager' ]] && { rebuild_swarm_manager="${2}"; };
     [[ $1 == '--install_db_crone_tab' ]] && { install_db_crone="${2}"; };
+    [[ $1 == '--set_host_name_master' ]] && { set_host_name_master="${2}"; };
     [[ $1 == '--worker_connect_to_manager' ]] && { ipaddr="${2}"; manager_token="${3}"; };
         shift 2 || break
 done
@@ -54,11 +55,11 @@ done
           "exec-opts": ["native.cgroupdriver=systemd"],
           "log-driver": "json-file",
           "log-opts": {
-            "max-size": "100m"
+          "max-size": "100m"
           },
           "storage-driver": "overlay2",
           "storage-opts": [
-            "overlay2.override_kernel_check=true"
+          "overlay2.override_kernel_check=true"
           ]
         }
 EOF
@@ -72,13 +73,13 @@ EOF
         
         #add kubernetes repo
         cat <<EOF > /etc/yum.repos.d/kubernetes.repo
-[kubernetes]
-name=Kubernetes
-baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
-enabled=1
-gpgcheck=1
-repo_gpgcheck=1
-gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+        [kubernetes]
+        name=Kubernetes
+        baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+        enabled=1
+        gpgcheck=1
+        repo_gpgcheck=1
+        gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 EOF
         
         
@@ -94,6 +95,21 @@ EOF
 
     fi
 
+        if  [[ $set_host_name_master == "yes" ]] ; then
+            if  [[ ! -z $(yum list installed | grep docker-ce.x86_64) ]] && [[ ! -z $(docker-compose --version) ]] ; then
+                sudo hostnamectl set-hostname master-node
+                ipaddr=$(sudo curl http://169.254.169.254/latest/meta-data/local-ipv4) 
+                echo "${ipaddr}" "master-node" >> /etc/hosts
+            
+                sudo sed -i '/swap/d' /etc/fstab
+                sudo swapoff -a
+                sudo echo '1' > /proc/sys/net/bridge/bridge-nf-call-iptables
+                
+                
+            fi
+        
+    fi
+
 
 
     if  [[ ! -z ${manager_token}  ]] ; then
@@ -104,12 +120,6 @@ EOF
             echo "${ipaddr}" "worker-node" >> /etc/hosts
             
             sudo kubeadm join "${ipaddr}" --token "${manager_token}" 
-        
-            
-                
-        else 
-            
-            echo "docker-compose or docker not  installed on target server check logs."
                 
         fi
         
@@ -121,13 +131,7 @@ EOF
             
             #sudo docker swarm init  | grep 'docker swarm join --token'
             
-            sudo hostnamectl set-hostname master-node
-            ipaddr=$(sudo curl http://169.254.169.254/latest/meta-data/local-ipv4) 
-            echo "${ipaddr}" "master-node" >> /etc/hosts
-            
-            sudo sed -i '/swap/d' /etc/fstab
-            sudo swapoff -a
-            sudo echo '1' > /proc/sys/net/bridge/bridge-nf-call-iptables
+
             sudo kubeadm init --node-name=$(hostname -f) --pod-network-cidr=192.168.0.0/16 | grep 'kubeadm join' | tr -d '\\'
             
             #for regular user centos
