@@ -109,7 +109,7 @@ EOF
         if  [[ ! -z $(yum list installed | grep docker-ce.x86_64) ]] && [[ ! -z $(docker-compose --version) ]] ; then
         
                 sudo hostnamectl set-hostname master-node                               3>&1 1>/dev/null 2>&3
-                ipaddr=$(sudo curl http://169.254.169.254/latest/meta-data/local-ipv4)  3>&1 1>/dev/null 2>&3
+                ipaddr=$(sudo curl --fail --silent --show-error http://169.254.169.254/latest/meta-data/local-ipv4)  3>&1 1>/dev/null 2>&3
                 echo "${ipaddr}" "master-node" >> /etc/hosts                            3>&1 1>/dev/null 2>&3
             
                 sudo sed -i '/swap/d' /etc/fstab                                        3>&1 1>/dev/null 2>&3
@@ -141,7 +141,7 @@ EOF
         if  [[ ! -z $(yum list installed | grep docker-ce.x86_64) ]] && [[ ! -z $(docker-compose --version) ]] ; then
             
             sudo hostnamectl set-hostname worker-node                                   3>&1 1>/dev/null 2>&3
-            ipaddr=$(sudo curl http://169.254.169.254/latest/meta-data/local-ipv4)      3>&1 1>/dev/null 2>&3
+            ipaddr=$(sudo curl --fail --silent --show-error http://169.254.169.254/latest/meta-data/local-ipv4)      3>&1 1>/dev/null 2>&3
             echo "${ipaddr}" "worker-node" >> /etc/hosts                                3>&1 1>/dev/null 2>&3  
             
             sudo kubeadm join "${ipaddr}" --token "${manager_token}"                    3>&1 1>/dev/null 2>&3 
