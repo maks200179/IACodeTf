@@ -141,6 +141,7 @@ EOF
         if  [[ ! -z $(yum list installed | grep docker-ce.x86_64) ]] && [[ ! -z $(docker-compose --version) ]] ; then
                  #sudo whoami
                  #whoami
+                 su root
                  export KUBECONFIG="$HOME/.kube/config"
                  echo $KUBECONFIG
                  ls -lsa $HOME/
