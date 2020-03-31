@@ -139,11 +139,12 @@ EOF
 
     if  [[ $check_cluster_up == "yes" ]] ; then
         if  [[ ! -z $(yum list installed | grep docker-ce.x86_64) ]] && [[ ! -z $(docker-compose --version) ]] ; then
-                 sudo whoami
-                 whoami
+                 #sudo whoami
+                 #whoami
+                 export KUBECONFIG="$HOME/.kube/config"
                  echo $KUBECONFIG
-                 echo $HOME
-                 sudo -s
+                 #echo $HOME
+                 #sudo -s
                  sudo kubectl cluster-info  | egrep --color  'Kubernetes master' | sed 's/\x1b\[[0-9;]*m//g'
                 
         fi
