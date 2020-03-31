@@ -9,7 +9,11 @@ while [[ ${1:0:2} == '--' ]] && [[ $# -ge 2 ]] ; do
     [[ $1 == '--init_swarm_manager' ]] && { init_swarm_manager="${2}"; };
     [[ $1 == '--rebuild_swarm_manager' ]] && { rebuild_swarm_manager="${2}"; };
     [[ $1 == '--install_db_crone_tab' ]] && { install_db_crone="${2}"; };
-    [[ $1 == '--worker_connect_to_manager' ]] && { ipaddr="${2}"; manager_token="${3}"; };
+    [[ $1 == '--install_kube' ]] && { install_kube="${2}"; };
+    [[ $1 == '--check_cluster_up' ]] && { check_cluster_up="${2}"; };
+    [[ $1 == '--get_token' ]] && { get_token="${2}"; };
+    [[ $1 == '--set_host_name_master' ]] && { set_host_name_master="${2}"; };
+    [[ $1 == '--worker_connect_to_manager' ]] && { ipaddr="${2}"; manager_token="${3}"; discovery-token-ca-cert-hash="${4}"; };
         shift 2 || break
 done
 
@@ -46,7 +50,6 @@ done
 
         fi
         
-        
         sudo mkdir /etc/docker
         # Setup daemon.
         cat > /etc/docker/daemon.json <<EOF
@@ -68,10 +71,18 @@ EOF
         # Restart Docker
         systemctl daemon-reload
         systemctl restart docker
+     
         
+
         
-        #add kubernetes repo
-        cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+    fi
+
+
+
+    if  [[ $install_kube == "yes" ]] ; then
+        if  [[ ! -z $(yum list installed | grep docker-ce.x86_64) ]] && [[ ! -z $(docker-compose --version) ]] ; then
+            #add kubernetes repo
+            cat <<EOF > /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
 baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
@@ -81,35 +92,79 @@ repo_gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 EOF
         
+            sudo yum install -y kubelet kubeadm kubectl 3>&1 1>/dev/null 2>&3
+            sudo systemctl enable kubelet               3>&1 1>/dev/null 2>&3
+            sudo systemctl start kubelet                3>&1 1>/dev/null 2>&3
+                
+                
+        fi
         
-        
-        sudo yum install -y kubelet kubeadm kubectl
-        sudo systemctl enable kubelet   
-        sudo systemctl start kubelet 
-        
-        
-        
-
-        
-
     fi
+
+
+
+
+
+
+    if  [[ $set_host_name_master == "yes" ]] ; then
+        if  [[ ! -z $(yum list installed | grep docker-ce.x86_64) ]] && [[ ! -z $(docker-compose --version) ]] ; then
+        
+                sudo hostnamectl set-hostname master-node                               
+                ipaddr=$(sudo curl --fail --silent --show-error http://169.254.169.254/latest/meta-data/local-ipv4) 
+                echo "${ipaddr}" "master-node" >> /etc/hosts                            
+            
+                sudo sed -i '/swap/d' /etc/fstab                                        
+                sudo swapoff -a                                                         
+                sudo echo '1' > /proc/sys/net/bridge/bridge-nf-call-iptables            
+                
+                
+        fi
+        
+    fi
+
+
+
+
+    if  [[ $get_token == "yes" ]] ; then
+        if  [[ ! -z $(yum list installed | grep docker-ce.x86_64) ]] && [[ ! -z $(docker-compose --version) ]] ; then
+        
+                sudo kubeadm token create --print-join-command | grep 'kubeadm join'
+                
+        fi
+        
+    fi
+
+
+
+
+    if  [[ $check_cluster_up == "yes" ]] ; then
+        if  [[ ! -z $(yum list installed | grep docker-ce.x86_64) ]] && [[ ! -z $(docker-compose --version) ]] ; then
+                 #sudo whoami
+                 #whoami
+                 su root
+                 export KUBECONFIG="$HOME/.kube/config"
+                 echo $KUBECONFIG
+                 ls -lsa $HOME/
+                 sudo su - root -c
+                 #echo $HOME
+                 #sudo -s
+                 sudo kubectl cluster-info  | egrep --color  'Kubernetes master' | sed 's/\x1b\[[0-9;]*m//g'
+                
+        fi
+        
+    fi
+
 
 
 
     if  [[ ! -z ${manager_token}  ]] ; then
         if  [[ ! -z $(yum list installed | grep docker-ce.x86_64) ]] && [[ ! -z $(docker-compose --version) ]] ; then
             
-            sudo hostnamectl set-hostname worker-node
-            ipaddr=$(sudo curl http://169.254.169.254/latest/meta-data/local-ipv4) 
-            echo "${ipaddr}" "worker-node" >> /etc/hosts
+            sudo hostnamectl set-hostname worker-node                                   
+            ipaddr=$(sudo curl --fail --silent --show-error http://169.254.169.254/latest/meta-data/local-ipv4)     
+            echo "${ipaddr}" "worker-node" >> /etc/hosts                                  
             
-            sudo kubeadm join "${ipaddr}" --token "${manager_token}" 
-        
-            
-                
-        else 
-            
-            echo "docker-compose or docker not  installed on target server check logs."
+            sudo kubeadm join "${ipaddr}" --token "${manager_token}"  --discovery-token-ca-cert-hash  "${discovery-token-ca-cert-hash}"                   
                 
         fi
         
@@ -121,26 +176,22 @@ EOF
             
             #sudo docker swarm init  | grep 'docker swarm join --token'
             
-            sudo hostnamectl set-hostname master-node
-            ipaddr=$(sudo curl http://169.254.169.254/latest/meta-data/local-ipv4) 
-            echo "${ipaddr}" "master-node" >> /etc/hosts
+
+            sudo kubeadm init --node-name=$(hostname -f) --pod-network-cidr=192.168.0.0/16  
             
-            sudo sed -i '/swap/d' /etc/fstab
-            sudo swapoff -a
-            sudo echo '1' > /proc/sys/net/bridge/bridge-nf-call-iptables
-            sudo kubeadm init --node-name=$(hostname -f) --pod-network-cidr=192.168.0.0/16 | grep 'kubeadm join' | tr -d '\\'
-            
-            #for regular user centos
-            mkdir -p $HOME/.kube
-            sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-            sudo chown $(id -u):$(id -g) $HOME/.kube/config
-            export KUBECONFIG=$HOME/.kube/config
+            #for root
+            mkdir -p $HOME/.kube                                                            
+            sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config                        
+            sudo chown $(id -u):$(id -g) $HOME/.kube/config                                 
+            export KUBECONFIG="$HOME/.kube/config"
+            sudo bash -c "KUBECONFIG='$HOME/.kube/config'"
+            #export KUBECONFIG=$HOME/.kube/config                                            3>&1 1>/dev/null 2>&3
             
             #for root 
             #sudo export KUBECONFIG=/etc/kubernetes/admin.conf
             
-            
-            sudo kubectl apply -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml
+            sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml     
+            #sudo kubectl apply -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml
                 
         else 
             
@@ -173,8 +224,3 @@ EOF
         
         fi
     fi
-    
-    
-    
-
-    
