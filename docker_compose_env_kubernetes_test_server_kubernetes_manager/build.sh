@@ -141,7 +141,7 @@ EOF
         if  [[ ! -z $(yum list installed | grep docker-ce.x86_64) ]] && [[ ! -z $(docker-compose --version) ]] ; then
                  #sudo whoami
                  #whoami
-                 sudo kubectl cluster-info  | egrep --color  'Kubernetes master'
+                 sudo bash -c "kubectl cluster-info  | egrep --color  'Kubernetes master'"
                 
         fi
         
