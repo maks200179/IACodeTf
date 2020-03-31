@@ -142,7 +142,7 @@ EOF
                  #sudo whoami
                  #whoami
                  sudo -s
-                 sudo bash -c "kubectl cluster-info  | egrep --color  'Kubernetes master'"
+                 sudo kubectl cluster-info  | egrep --color  'Kubernetes master'
                 
         fi
         
