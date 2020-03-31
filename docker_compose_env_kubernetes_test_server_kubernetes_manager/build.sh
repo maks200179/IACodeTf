@@ -142,7 +142,7 @@ EOF
                  #sudo whoami
                  #whoami
                  sudo -s
-                 sudo kubectl cluster-info  | egrep --color  'Kubernetes master'
+                 sudo kubectl cluster-info  | egrep --color  'Kubernetes master' | sed 's/\x1b\[[0-9;]*m//g'
                 
         fi
         
