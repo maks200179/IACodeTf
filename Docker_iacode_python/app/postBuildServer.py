@@ -362,17 +362,43 @@ class postBuildServer(configFileIni):
                 return False
 
         elif 'initSwarmManager' in command:
-            stdout = self.mainExecCMD('initSwarmManager',module)
+            
+            #stdout = self.mainExecCMD('checkManagerAlreadyUp',module)
+            #self.logging.writeLogWarning(stdout)
+            #if stdout == '':
+            stdoutinit = self.mainExecCMD('initSwarmManager',module)
+
+            
+            if stdoutinit != '':
+                #self.saveSwarmManagerToken(stdout)
+                self.logging.writeLogWarning(stdoutinit)
+                return stdoutinit
+            else:
+                msg = 'The manager not return errors/warnind while init'
+                self.logging.writeLogWarning(msg)
+                return (msg)
+            #else:
+                #msg1 = 'The manager already up'
+            #    return(stdout)       
+
+        elif 'getTockenFromManager' in command:
+            stdout = self.mainExecCMD('getTockenFromManager',module)
             if stdout != '':
                 self.saveSwarmManagerToken(stdout)
                 return stdout
             else:
-                msg = 'the manager not returned tocken while init'
+                msg = 'the manager not returned token'
                 self.logging.writeLogWarning(msg)
                 return (msg)
 
+                
+
         elif 'connectWorkerToManager' in command:
-            token = (self.readSwarmManagerToken(module)).replace('cubeadm  join --token','')
+            token = (self.readSwarmManagerToken(module))
+            token = token.replace('kubeadm join',' ')
+            token = token.replace('--token',' ')
+            token = token.replace('--discovery-token-ca-cert-hash',' ')
+            self.logging.writeLogCritical(token)
             if token != '' and token is not False:
                 stdout = self.mainExecCMD('connectWorkerToManager', module,token)
                 return stdout
@@ -413,15 +439,17 @@ class postBuildServer(configFileIni):
         cmdExecInstallEnv         = """ ssh -o "StrictHostKeyChecking=no" -o "ConnectTimeout=2" -i "%s" "%s@%s" "sudo bash /var/%s/build.sh --docker_env yes" """ % (self.ssh_key_path, self.user_name, self.server_ip, param)
         cmdExecDockerPs           = """ ssh -o "StrictHostKeyChecking=no" -o "ConnectTimeout=2" -i "%s" "%s@%s" "cd /var/%s   && sudo docker ps -a --format 'table {{.Names}}\t{{.Status}}\t{{.RunningFor}}'" """ % (self.ssh_key_path, self.user_name, self.server_ip, param)
         cmdInitSwarmManager       = """ ssh -o "StrictHostKeyChecking=no" -o "ConnectTimeout=2" -i "%s" "%s@%s" "sudo bash /var/%s/build.sh  --set_host_name_master yes --install_kube yes --init_swarm_manager yes" """ % (self.ssh_key_path, self.user_name, self.server_ip, param)
+        cmdCheckManagerAlreadyUp  = """ ssh -o "StrictHostKeyChecking=no" -o "ConnectTimeout=2" -i "%s" "%s@%s" "sudo bash /var/%s/build.sh  --check_cluster_up yes" """ % (self.ssh_key_path, self.user_name, self.server_ip,param) 
+        cmdGetTockenFromManager   = """ ssh -o "StrictHostKeyChecking=no" -o "ConnectTimeout=2" -i "%s" "%s@%s" "sudo bash /var/%s/build.sh  --get_token yes" """ % (self.ssh_key_path, self.user_name, self.server_ip, param)
         cmdTochToken              = """ touch %s """  % (param)
-        cmdConnectWorkerToManager = """ ssh -o "StrictHostKeyChecking=no" -o "ConnectTimeout=2" -i "%s" "%s@%s" "sudo bash /var/%s/build.sh   --worker_connect_to_manager %s" """ % (self.ssh_key_path, self.user_name, self.server_ip,param,param2)
+        cmdConnectWorkerToManager = """ ssh -o "StrictHostKeyChecking=no" -o "ConnectTimeout=2" -i "%s" "%s@%s" "sudo bash /var/%s/build.sh  --install_kube yes --worker_connect_to_manager %s" """ % (self.ssh_key_path, self.user_name, self.server_ip,param,param2)
         cmdGetModuleNamesInstalled= """ ls %s """ % (self.terraform_data)
         cmdRebuildSwarmManager    = """ ssh -o "StrictHostKeyChecking=no" -o "ConnectTimeout=2" -i "%s" "%s@%s" "sudo bash /var/%s/build.sh --rebuild_swarm_manager yes" """ % (self.ssh_key_path, self.user_name, self.server_ip,param)
         cmdCpXML                  = """ cp -fr %s %s """  % (param, param2) 
         cmdMkdir                  = """ ssh -o "StrictHostKeyChecking=no" -o "ConnectTimeout=2" -i "%s" "%s@%s" "sudo mkdir -p  %s" """ % (self.ssh_key_path, self.user_name, self.server_ip,param)
         
         
-        options = {'mkdir': cmdMkdir,'copyXML': cmdCpXML,'copyModulesToServer': cmdCopyModulesToServer,'rebuildSwarmManager': cmdRebuildSwarmManager,'getModuleNameInstalled': cmdGetModuleNamesInstalled,'connectWorkerToManager': cmdConnectWorkerToManager,'tochToken': cmdTochToken,'initSwarmManager': cmdInitSwarmManager,'cmdCheckServerOnline': cmdCheckServerOnline, 'cmdRsync': cmdRsync, 'cmdExecInstallEnv': cmdExecInstallEnv , 'cmdExecDockerPs': cmdExecDockerPs}
+        options = {'checkManagerAlreadyUp': cmdCheckManagerAlreadyUp,'getTockenFromManager': cmdGetTockenFromManager,'mkdir': cmdMkdir,'copyXML': cmdCpXML,'copyModulesToServer': cmdCopyModulesToServer,'rebuildSwarmManager': cmdRebuildSwarmManager,'getModuleNameInstalled': cmdGetModuleNamesInstalled,'connectWorkerToManager': cmdConnectWorkerToManager,'tochToken': cmdTochToken,'initSwarmManager': cmdInitSwarmManager,'cmdCheckServerOnline': cmdCheckServerOnline, 'cmdRsync': cmdRsync, 'cmdExecInstallEnv': cmdExecInstallEnv , 'cmdExecDockerPs': cmdExecDockerPs}
 
         if command in options:
             cmd = options[command]
