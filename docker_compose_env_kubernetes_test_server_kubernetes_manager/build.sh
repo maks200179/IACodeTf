@@ -139,8 +139,8 @@ EOF
 
     if  [[ $check_cluster_up == "yes" ]] ; then
         if  [[ ! -z $(yum list installed | grep docker-ce.x86_64) ]] && [[ ! -z $(docker-compose --version) ]] ; then
-                 sudo whoami
-                 whoami
+                 #sudo whoami
+                 #whoami
                  kubectl cluster-info  | egrep --color  'Kubernetes master'
                 
         fi
