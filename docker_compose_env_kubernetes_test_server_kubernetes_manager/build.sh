@@ -13,7 +13,7 @@ while [[ ${1:0:2} == '--' ]] && [[ $# -ge 2 ]] ; do
     [[ $1 == '--check_cluster_up' ]] && { check_cluster_up="${2}"; };
     [[ $1 == '--get_token' ]] && { get_token="${2}"; };
     [[ $1 == '--set_host_name_master' ]] && { set_host_name_master="${2}"; };
-    [[ $1 == '--worker_connect_to_manager' ]] && { ipaddr="${2}"; manager_token="${3}"; discovery-token-ca-cert-hash="${4}"; };
+    [[ $1 == '--worker_connect_to_manager' ]] && { ipaddr="${2}"; manager_token="${3}"; discovery_token="${4}"; };
         shift 2 || break
 done
 
@@ -161,10 +161,10 @@ EOF
         if  [[ ! -z $(yum list installed | grep docker-ce.x86_64) ]] && [[ ! -z $(docker-compose --version) ]] ; then
             
             sudo hostnamectl set-hostname worker-node                                   
-            ipaddr=$(sudo curl --fail --silent --show-error http://169.254.169.254/latest/meta-data/local-ipv4)     
-            echo "${ipaddr}" "worker-node" >> /etc/hosts                                  
+            ipaddres=$(sudo curl --fail --silent --show-error http://169.254.169.254/latest/meta-data/local-ipv4)     
+            echo "${ipaddres}" "worker-node" >> /etc/hosts                                  
             
-            sudo kubeadm join "${ipaddr}" --token "${manager_token}"  --discovery-token-ca-cert-hash  "${discovery-token-ca-cert-hash}"                   
+            sudo kubeadm join "${ipaddr}" --token "${manager_token}"  --discovery-token-ca-cert-hash  "${discovery_token}"                   
                 
         fi
         
@@ -224,11 +224,3 @@ EOF
         
         fi
     fi
-    
-    
-    
-
-    
-
-    
-  
