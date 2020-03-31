@@ -109,13 +109,13 @@ EOF
     if  [[ $set_host_name_master == "yes" ]] ; then
         if  [[ ! -z $(yum list installed | grep docker-ce.x86_64) ]] && [[ ! -z $(docker-compose --version) ]] ; then
         
-                sudo hostnamectl set-hostname master-node                               3>&1 1>/dev/null 2>&3
-                ipaddr=$(sudo curl --fail --silent --show-error http://169.254.169.254/latest/meta-data/local-ipv4)  3>&1 1>/dev/null 2>&3
-                echo "${ipaddr}" "master-node" >> /etc/hosts                            3>&1 1>/dev/null 2>&3
+                sudo hostnamectl set-hostname master-node                               
+                ipaddr=$(sudo curl --fail --silent --show-error http://169.254.169.254/latest/meta-data/local-ipv4) 
+                echo "${ipaddr}" "master-node" >> /etc/hosts                            
             
-                sudo sed -i '/swap/d' /etc/fstab                                        3>&1 1>/dev/null 2>&3
-                sudo swapoff -a                                                         3>&1 1>/dev/null 2>&3
-                sudo echo '1' > /proc/sys/net/bridge/bridge-nf-call-iptables            3>&1 1>/dev/null 2>&3
+                sudo sed -i '/swap/d' /etc/fstab                                        
+                sudo swapoff -a                                                         
+                sudo echo '1' > /proc/sys/net/bridge/bridge-nf-call-iptables            
                 
                 
         fi
@@ -160,11 +160,11 @@ EOF
     if  [[ ! -z ${manager_token}  ]] ; then
         if  [[ ! -z $(yum list installed | grep docker-ce.x86_64) ]] && [[ ! -z $(docker-compose --version) ]] ; then
             
-            sudo hostnamectl set-hostname worker-node                                   3>&1 1>/dev/null 2>&3
-            ipaddr=$(sudo curl --fail --silent --show-error http://169.254.169.254/latest/meta-data/local-ipv4)      3>&1 1>/dev/null 2>&3
-            echo "${ipaddr}" "worker-node" >> /etc/hosts                                3>&1 1>/dev/null 2>&3  
+            sudo hostnamectl set-hostname worker-node                                   
+            ipaddr=$(sudo curl --fail --silent --show-error http://169.254.169.254/latest/meta-data/local-ipv4)     
+            echo "${ipaddr}" "worker-node" >> /etc/hosts                                  
             
-            sudo kubeadm join "${ipaddr}" --token "${manager_token}"  --discovery-token-ca-cert-hash  "${discovery-token-ca-cert-hash}"                  3>&1 1>/dev/null 2>&3 
+            sudo kubeadm join "${ipaddr}" --token "${manager_token}"  --discovery-token-ca-cert-hash  "${discovery-token-ca-cert-hash}"                   
                 
         fi
         
@@ -177,12 +177,12 @@ EOF
             #sudo docker swarm init  | grep 'docker swarm join --token'
             
 
-            sudo kubeadm init --node-name=$(hostname -f) --pod-network-cidr=192.168.0.0/16  3>&1 1>/dev/null 2>&3
+            sudo kubeadm init --node-name=$(hostname -f) --pod-network-cidr=192.168.0.0/16  
             
             #for root
-            mkdir -p $HOME/.kube                                                            3>&1 1>/dev/null 2>&3
-            sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config                        3>&1 1>/dev/null 2>&3
-            sudo chown $(id -u):$(id -g) $HOME/.kube/config                                 3>&1 1>/dev/null 2>&3
+            mkdir -p $HOME/.kube                                                            
+            sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config                        
+            sudo chown $(id -u):$(id -g) $HOME/.kube/config                                 
             export KUBECONFIG="$HOME/.kube/config"
             sudo bash -c "KUBECONFIG='$HOME/.kube/config'"
             #export KUBECONFIG=$HOME/.kube/config                                            3>&1 1>/dev/null 2>&3
@@ -190,7 +190,7 @@ EOF
             #for root 
             #sudo export KUBECONFIG=/etc/kubernetes/admin.conf
             
-            sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml     3>&1 1>/dev/null 2>&3
+            sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml     
             #sudo kubectl apply -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml
                 
         else 
