@@ -10,6 +10,7 @@ while [[ ${1:0:2} == '--' ]] && [[ $# -ge 2 ]] ; do
     [[ $1 == '--rebuild_swarm_manager' ]] && { rebuild_swarm_manager="${2}"; };
     [[ $1 == '--install_db_crone_tab' ]] && { install_db_crone="${2}"; };
     [[ $1 == '--install_kube' ]] && { install_kube="${2}"; };
+    [[ $1 == '--check_cluster_up' ]] && { check_cluster_up="${2}"; };
     [[ $1 == '--get_token' ]] && { get_token="${2}"; };
     [[ $1 == '--set_host_name_master' ]] && { set_host_name_master="${2}"; };
     [[ $1 == '--worker_connect_to_manager' ]] && { ipaddr="${2}"; manager_token="${3}"; };
@@ -133,6 +134,17 @@ EOF
         
     fi
 
+
+
+
+    if  [[ $check_cluster_up == "yes" ]] ; then
+        if  [[ ! -z $(yum list installed | grep docker-ce.x86_64) ]] && [[ ! -z $(docker-compose --version) ]] ; then
+        
+                 sudo kubectl cluster-info  | egrep --color  'Kubernetes master'
+                
+        fi
+        
+    fi
 
 
 
