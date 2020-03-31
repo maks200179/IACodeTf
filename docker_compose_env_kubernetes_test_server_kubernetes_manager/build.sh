@@ -173,7 +173,7 @@ EOF
 
             sudo kubeadm init --node-name=$(hostname -f) --pod-network-cidr=192.168.0.0/16  3>&1 1>/dev/null 2>&3
             
-            #for regular user centos
+            #for root
             mkdir -p $HOME/.kube                                                            3>&1 1>/dev/null 2>&3
             sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config                        3>&1 1>/dev/null 2>&3
             sudo chown $(id -u):$(id -g) $HOME/.kube/config                                 3>&1 1>/dev/null 2>&3
