@@ -13,7 +13,7 @@ while [[ ${1:0:2} == '--' ]] && [[ $# -ge 2 ]] ; do
     [[ $1 == '--check_cluster_up' ]] && { check_cluster_up="${2}"; };
     [[ $1 == '--get_token' ]] && { get_token="${2}"; };
     [[ $1 == '--set_host_name_master' ]] && { set_host_name_master="${2}"; };
-    [[ $1 == '--worker_connect_to_manager' ]] && { ipaddr="${2}"; manager_token="${3}"; };
+    [[ $1 == '--worker_connect_to_manager' ]] && { ipaddr="${2}"; manager_token="${3}"; discovery-token-ca-cert-hash="${4}"; };
         shift 2 || break
 done
 
@@ -156,7 +156,7 @@ EOF
             ipaddr=$(sudo curl --fail --silent --show-error http://169.254.169.254/latest/meta-data/local-ipv4)      3>&1 1>/dev/null 2>&3
             echo "${ipaddr}" "worker-node" >> /etc/hosts                                3>&1 1>/dev/null 2>&3  
             
-            sudo kubeadm join "${ipaddr}" --token "${manager_token}"                    3>&1 1>/dev/null 2>&3 
+            sudo kubeadm join "${ipaddr}" --token "${manager_token}"  --discovery-token-ca-cert-hash  "${discovery-token-ca-cert-hash}"                  3>&1 1>/dev/null 2>&3 
                 
         fi
         
