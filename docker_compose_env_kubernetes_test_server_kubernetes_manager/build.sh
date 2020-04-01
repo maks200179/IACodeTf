@@ -180,17 +180,17 @@ EOF
             sudo kubeadm init --node-name=$(hostname -f) --pod-network-cidr=192.168.0.0/16  
             
             #for root
-            mkdir -p $HOME/.kube                                                            
-            sudo yes | cp -i /etc/kubernetes/admin.conf $HOME/.kube/config                        
-            sudo chown $(id -u):$(id -g) $HOME/.kube/config                                 
-            export KUBECONFIG="$HOME/.kube/config"
+            mkdir -p $HOME/.kube                                              > /dev/null                                                   
+            sudo yes | cp -i /etc/kubernetes/admin.conf $HOME/.kube/config    > /dev/null                    
+            sudo chown $(id -u):$(id -g) $HOME/.kube/config                   > /dev/null                             
+            export KUBECONFIG="$HOME/.kube/config"                            > /dev/null  
             #sudo bash -c "KUBECONFIG='$HOME/.kube/config'"
             #export KUBECONFIG=$HOME/.kube/config                                            3>&1 1>/dev/null 2>&3
             
             #for root 
             #sudo export KUBECONFIG=/etc/kubernetes/admin.conf
             
-            sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml   
+            sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml   > /dev/null
             #sudo kubectl apply -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml
                 
         else 
