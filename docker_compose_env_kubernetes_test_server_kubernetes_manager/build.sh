@@ -92,9 +92,9 @@ repo_gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 EOF
         
-            sudo yum install -y kubelet kubeadm kubectl 3>&1 1>/dev/null 2>&3
-            sudo systemctl enable kubelet               3>&1 1>/dev/null 2>&3
-            sudo systemctl start kubelet                3>&1 1>/dev/null 2>&3
+            sudo yum install -y kubelet kubeadm kubectl >/dev/null 2>&1
+            sudo systemctl enable kubelet               >/dev/null 2>&1
+            sudo systemctl start kubelet                >/dev/null 2>&1
                 
                 
         fi
@@ -190,7 +190,7 @@ EOF
             #for root 
             #sudo export KUBECONFIG=/etc/kubernetes/admin.conf
             
-            sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml   3>&1 1>/dev/null 2>&3  
+            sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml   
             #sudo kubectl apply -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml
                 
         else 
