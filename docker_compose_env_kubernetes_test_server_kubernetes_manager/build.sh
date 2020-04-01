@@ -177,7 +177,7 @@ EOF
             #sudo docker swarm init  | grep 'docker swarm join --token'
             
 
-            sudo kubeadm init --node-name=$(hostname -f) --pod-network-cidr=192.168.0.0/16  
+            sudo kubeadm init --node-name=$(hostname -f) --pod-network-cidr=192.168.0.0/16  | sed 's/\x1b\[[0-9;]*m//g'
             
             #for root
             mkdir -p $HOME/.kube                                                            
