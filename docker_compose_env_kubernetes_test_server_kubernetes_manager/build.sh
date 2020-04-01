@@ -190,7 +190,7 @@ EOF
             #for root 
             #sudo export KUBECONFIG=/etc/kubernetes/admin.conf
             
-            sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml  
+            sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml > /dev/null 
             #sudo kubectl apply -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml
                 
         else 
