@@ -170,8 +170,20 @@ resource "aws_security_group" "kubernetes_test-kubernetes_manager-sg-kubernetes-
     cidr_blocks = local.subnet_cidr
   }
   
-  
+  ingress {
+    from_port   = 8472
+    to_port     = 8472
+    protocol    = "udp"
+    cidr_blocks = local.subnet_cidr
+  }
  
+  ingress {
+    from_port   = 8285
+    to_port     = 8285
+    protocol    = "udp"
+    cidr_blocks = local.subnet_cidr
+  }
+  
   tags = {
     Name = "kubernetes_test-kubernetes_manager-sg-kubernetes-2376"
   }
