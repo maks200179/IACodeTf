@@ -148,7 +148,7 @@ EOF
                  sudo su - root -c
                  #echo $HOME
                  #sudo -s
-                 sudo kubectl cluster-info  | egrep --color  'Kubernetes master' | sed 's/\x1b\[[0-9;]*m//g'
+                 sudo kubectl cluster-info  | egrep --color  'Kubernetes master' 3>&1 1>/dev/null 2>&3 | sed 's/\x1b\[[0-9;]*m//g' 
                 
         fi
         
@@ -177,7 +177,7 @@ EOF
             #sudo docker swarm init  | grep 'docker swarm join --token'
             
 
-            sudo kubeadm init --node-name=$(hostname -f) --pod-network-cidr=192.168.0.0/16  | sed 's/\x1b\[[0-9;]*m//g'
+            sudo kubeadm init --node-name=$(hostname -f) --pod-network-cidr=192.168.0.0/16  3>&1 1>/dev/null 2>&3 | sed 's/\x1b\[[0-9;]*m//g'
             
             #for root
             mkdir -p $HOME/.kube                                                            
@@ -190,7 +190,7 @@ EOF
             #for root 
             #sudo export KUBECONFIG=/etc/kubernetes/admin.conf
             
-            sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml     
+            sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml   3>&1 1>/dev/null 2>&3  
             #sudo kubectl apply -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml
                 
         else 
