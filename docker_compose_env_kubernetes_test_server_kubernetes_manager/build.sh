@@ -177,11 +177,11 @@ EOF
             #sudo docker swarm init  | grep 'docker swarm join --token'
             
 
-            sudo kubeadm init --node-name=$(hostname -f) --pod-network-cidr=192.168.0.0/16  3>&1 1>/dev/null 2>&3 | sed 's/\x1b\[[0-9;]*m//g'
+            sudo kubeadm init --node-name=$(hostname -f) --pod-network-cidr=192.168.0.0/16  | 3>&1 1>/dev/null 2>&3 | sed 's/\x1b\[[0-9;]*m//g'
             
             #for root
             mkdir -p $HOME/.kube                                                            
-            sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config                        
+            sudo yes | cp -i /etc/kubernetes/admin.conf $HOME/.kube/config                        
             sudo chown $(id -u):$(id -g) $HOME/.kube/config                                 
             export KUBECONFIG="$HOME/.kube/config"
             #sudo bash -c "KUBECONFIG='$HOME/.kube/config'"
