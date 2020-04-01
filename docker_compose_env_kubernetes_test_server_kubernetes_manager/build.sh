@@ -92,9 +92,9 @@ repo_gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 EOF
         
-            sudo yum install -y kubelet kubeadm kubectl > /dev/null
-            sudo systemctl enable kubelet               > /dev/null
-            sudo systemctl start kubelet                > /dev/null
+            sudo yum install -y kubelet kubeadm kubectl >/dev/null 2>&1
+            sudo systemctl enable kubelet               >/dev/null 2>&1
+            sudo systemctl start kubelet                >/dev/null 2>&1
                 
                 
         fi
