@@ -92,9 +92,9 @@ repo_gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 EOF
         
-            sudo yum install -y kubelet kubeadm kubectl >/dev/null 2>&1
-            sudo systemctl enable kubelet               >/dev/null 2>&1
-            sudo systemctl start kubelet                >/dev/null 2>&1
+            sudo yum install -y kubelet kubeadm kubectl > /dev/null
+            sudo systemctl enable kubelet               > /dev/null
+            sudo systemctl start kubelet                > /dev/null
                 
                 
         fi
@@ -177,7 +177,7 @@ EOF
             #sudo docker swarm init  | grep 'docker swarm join --token'
             
 
-            sudo kubeadm init --node-name=$(hostname -f) --pod-network-cidr=192.168.0.0/16  | 3>&1 1>/dev/null 2>&3 | sed 's/\x1b\[[0-9;]*m//g'
+            sudo kubeadm init --node-name=$(hostname -f) --pod-network-cidr=192.168.0.0/16  
             
             #for root
             mkdir -p $HOME/.kube                                                            
