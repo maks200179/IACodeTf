@@ -50,21 +50,21 @@ done
 
         fi
         
-        #sudo mkdir /etc/docker
+        sudo mkdir /etc/docker
         # Setup daemon.
-        #cat > /etc/docker/daemon.json <<EOF
-        #{
-        #  "exec-opts": ["native.cgroupdriver=systemd"],
-        #  "log-driver": "json-file",
-        #  "log-opts": {
-         #   "max-size": "100m"
-        #  },
-         # "storage-driver": "overlay2",
-         # "storage-opts": [
-         #   "overlay2.override_kernel_check=true"
-         # ]
-        #}
-#EOF
+        cat > /etc/docker/daemon.json <<EOF
+        {
+          "exec-opts": ["native.cgroupdriver=systemd"],
+          "log-driver": "json-file",
+          "log-opts": {
+            "max-size": "100m"
+          },
+          "storage-driver": "overlay2",
+          "storage-opts": [
+            "overlay2.override_kernel_check=true"
+          ]
+        }
+EOF
 
        # mkdir -p /etc/systemd/system/docker.service.d
 
@@ -192,6 +192,7 @@ EOF
             
             sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml > /dev/null 
             #sudo kubectl apply -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml
+            sudo kubectl create rolebinding -n kube-system configmaps --role=extension-apiserver-authentication-reader --serviceaccount=kube-system:cloud-controller-manager
                 
         else 
             
