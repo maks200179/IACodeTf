@@ -84,9 +84,42 @@ resource "aws_security_group" "kubernetes_test-kubernetes_manager-sg-ssh-local" 
     protocol    = "tcp"
     cidr_blocks = local.subnet_cidr
   }
- 
-
- 
+  
+  ingress {
+    from_port   = 959
+    to_port     = 959
+    protocol    = "udp"
+    cidr_blocks = local.subnet_cidr
+  } 
+  
+  ingress {
+    from_port   = 68
+    to_port     = 68
+    protocol    = "udp"
+    cidr_blocks = local.subnet_cidr
+  } 
+  
+  ingress {
+    from_port   = 111
+    to_port     = 111
+    protocol    = "udp"
+    cidr_blocks = local.subnet_cidr
+  } 
+  
+  ingress {
+    from_port   = 8472
+    to_port     = 8472
+    protocol    = "udp"
+    cidr_blocks = local.subnet_cidr
+  } 
+  
+  ingress {
+    from_port   = 323
+    to_port     = 323
+    protocol    = "udp"
+    cidr_blocks = local.subnet_cidr
+  } 
+  
   tags = {
     Name = "kubernetes_test-kubernetes_manager-sg-ssh-local"
   }
