@@ -192,6 +192,7 @@ class buildModule(QWidget , configFileIni ):
                         self.textBrowserStd.append(stdInitSwarmManager)
                         stdGetTockenFromManager = self.postbuildserver.mainBuildRemoveModule('getTockenFromManager',module)
                         self.textBrowserStd.append(stdGetTockenFromManager)                        
+                        
                         #rebuildSwarmManager = self.postbuildserver.mainBuildRemoveModule('rebuildSwarmManager',module)
                         #self.textBrowserStd.append(rebuildSwarmManager)
                         QApplication.processEvents()

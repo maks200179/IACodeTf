@@ -181,7 +181,7 @@ class postBuildServer(configFileIni):
             return msg
         json_data                   = self.fileGetContentsJson(filePatch)
         
-        self.ssh_key_name                 = json_data["ssh_key_name"]
+        self.ssh_key_name           = json_data["ssh_key_name"]
         self.network_module_name    = json_data["network_module_name"]
         self.user_name              = json_data["username"]
         self.swarm                  = "swarm" in json_data
