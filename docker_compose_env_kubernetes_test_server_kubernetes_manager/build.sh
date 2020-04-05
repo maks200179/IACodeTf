@@ -178,7 +178,7 @@ EOF
             #sudo docker swarm init  | grep 'docker swarm join --token'
             
 
-            sudo kubeadm init --node-name=$(hostname -f) --pod-network-cidr=10.244.0.0/16  | grep "Your Kubernetes control-plane has initialized" | sed 's/\x1b\[[0-9;]*m//g' 
+            sudo kubeadm init  --pod-network-cidr=10.244.0.0/16  | grep "Your Kubernetes control-plane has initialized" | sed 's/\x1b\[[0-9;]*m//g' 
             
             #for root
             mkdir -p $HOME/.kube                                              > /dev/null                                                   
@@ -192,7 +192,7 @@ EOF
             #sudo export KUBECONFIG=/etc/kubernetes/admin.conf
             
             #for --pod-network-cidr=10.244.0.0/16
-            #sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/2140ac876ef134e0ed5af15c65e414cf26827915/Documentation/kube-flannel.yml
+            sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/2140ac876ef134e0ed5af15c65e414cf26827915/Documentation/kube-flannel.yml
             
             #sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml > /dev/null 
             #sudo kubectl apply -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml
