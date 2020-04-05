@@ -51,6 +51,7 @@ done
         fi
         
         sudo mkdir /etc/docker
+        #sudo mkdir /etc/docker
         # Setup daemon.
         cat > /etc/docker/daemon.json <<EOF
         {
@@ -66,11 +67,11 @@ done
         }
 EOF
 
-       # mkdir -p /etc/systemd/system/docker.service.d
+        mkdir -p /etc/systemd/system/docker.service.d
 
         # Restart Docker
-        #systemctl daemon-reload
-        #systemctl restart docker
+        systemctl daemon-reload
+        systemctl restart docker
      
         
 
