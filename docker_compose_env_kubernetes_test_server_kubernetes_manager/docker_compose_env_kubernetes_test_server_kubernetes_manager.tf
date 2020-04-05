@@ -179,7 +179,13 @@ resource "aws_security_group" "kubernetes_test-kubernetes_manager-sg-kubernetes-
     protocol    = "tcp"
     cidr_blocks = local.subnet_cidr
   }
- 
+  
+  ingress {
+    from_port   = 9135
+    to_port     = 9135
+    protocol    = "tcp"
+    cidr_blocks = local.subnet_cidr
+  }
  
   tags = {
     Name = "kubernetes_test-kubernetes_manager-sg-kubernetes-registry"
