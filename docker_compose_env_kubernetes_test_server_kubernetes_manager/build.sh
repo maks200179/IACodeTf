@@ -95,6 +95,7 @@ EOF
             sudo yum install -y kubelet kubeadm kubectl >/dev/null 2>&1
             sudo systemctl enable kubelet               >/dev/null 2>&1
             sudo systemctl start kubelet                >/dev/null 2>&1
+            sudo yum install -y tcpdump                 >/dev/null 2>&1
                 
                 
         fi
