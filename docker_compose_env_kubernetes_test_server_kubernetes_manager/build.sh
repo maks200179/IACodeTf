@@ -198,7 +198,8 @@ EOF
             #sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml > /dev/null 
             #sudo kubectl apply -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml
             sudo kubectl create rolebinding -n kube-system configmaps --role=extension-apiserver-authentication-reader --serviceaccount=kube-system:cloud-controller-manager
-                
+            sudo kubectl taint nodes --all node-role.kubernetes.io/master-
+            
         else 
             
             echo "docker-compose or docker not  installed on target server check logs."
