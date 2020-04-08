@@ -1,5 +1,5 @@
 #!/bin/bash
-#set -x
+set -x
 
 #kubectl -n kube-system logs $(kubectl get pods --all-namespaces --no-headers -o custom-columns=":metadata.name")
 

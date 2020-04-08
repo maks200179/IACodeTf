@@ -51,6 +51,7 @@ done
         fi
         
         sudo mkdir /etc/docker
+        #sudo mkdir /etc/docker
         # Setup daemon.
         cat > /etc/docker/daemon.json <<EOF
         {
@@ -66,11 +67,11 @@ done
         }
 EOF
 
-       # mkdir -p /etc/systemd/system/docker.service.d
+        mkdir -p /etc/systemd/system/docker.service.d
 
         # Restart Docker
-        #systemctl daemon-reload
-        #systemctl restart docker
+        systemctl daemon-reload
+        systemctl restart docker
      
         
 
@@ -95,6 +96,7 @@ EOF
             sudo yum install -y kubelet kubeadm kubectl >/dev/null 2>&1
             sudo systemctl enable kubelet               >/dev/null 2>&1
             sudo systemctl start kubelet                >/dev/null 2>&1
+            sudo yum install -y tcpdump                 >/dev/null 2>&1
                 
                 
         fi
@@ -177,7 +179,7 @@ EOF
             #sudo docker swarm init  | grep 'docker swarm join --token'
             
 
-            sudo kubeadm init --node-name=$(hostname -f) --pod-network-cidr=192.168.0.0/16  | grep "Your Kubernetes control-plane has initialized" | sed 's/\x1b\[[0-9;]*m//g' 
+            sudo kubeadm init  --pod-network-cidr=10.244.0.0/16  | grep "Your Kubernetes control-plane has initialized" | sed 's/\x1b\[[0-9;]*m//g' 
             
             #for root
             mkdir -p $HOME/.kube                                              > /dev/null                                                   
@@ -190,10 +192,14 @@ EOF
             #for root 
             #sudo export KUBECONFIG=/etc/kubernetes/admin.conf
             
-            sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml > /dev/null 
+            #for --pod-network-cidr=10.244.0.0/16
+            sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/2140ac876ef134e0ed5af15c65e414cf26827915/Documentation/kube-flannel.yml > /dev/null 
+            
+            #sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml > /dev/null 
             #sudo kubectl apply -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml
             sudo kubectl create rolebinding -n kube-system configmaps --role=extension-apiserver-authentication-reader --serviceaccount=kube-system:cloud-controller-manager
-                
+            sudo kubectl taint nodes --all node-role.kubernetes.io/master-
+            
         else 
             
             echo "docker-compose or docker not  installed on target server check logs."

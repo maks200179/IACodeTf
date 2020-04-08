@@ -30,7 +30,7 @@ resource "local_file" "kubernetes_test_key_pem" {
 
 // create the virtual private network
 resource "aws_vpc" "kubernetes_test-vpc" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block = "10.0.0.0/8"
   enable_dns_hostnames = true
   enable_dns_support = true
  
