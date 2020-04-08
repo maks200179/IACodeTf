@@ -182,10 +182,10 @@ EOF
             sudo kubeadm init  --service-cidr=10.0.0.0/8 --pod-network-cidr=10.244.0.0/16  | grep "Your Kubernetes control-plane has initialized" | sed 's/\x1b\[[0-9;]*m//g' 
             
             #for root
-            mkdir -p $HOME/.kube                                              > /dev/null                                                   
+            mkdir -p $HOME/.kube                                                                                                 
             sudo yes | cp -i /etc/kubernetes/admin.conf $HOME/.kube/config    > /dev/null                    
-            sudo chown $(id -u):$(id -g) $HOME/.kube/config                   > /dev/null                             
-            export KUBECONFIG="$HOME/.kube/config"                            > /dev/null  
+            sudo chown $(id -u):$(id -g) $HOME/.kube/config                                                
+            export KUBECONFIG="$HOME/.kube/config"                              
             #sudo bash -c "KUBECONFIG='$HOME/.kube/config'"
             #export KUBECONFIG=$HOME/.kube/config                                            3>&1 1>/dev/null 2>&3
             
