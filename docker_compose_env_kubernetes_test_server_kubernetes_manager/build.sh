@@ -183,7 +183,7 @@ EOF
             
             #for root
             mkdir -p $HOME/.kube                                                                                                 
-            sudo yes | cp -i /etc/kubernetes/admin.conf $HOME/.kube/config    > /dev/null                    
+            sudo yes | cp -i /etc/kubernetes/admin.conf $HOME/.kube/config                        
             sudo chown $(id -u):$(id -g) $HOME/.kube/config                                                
             export KUBECONFIG="$HOME/.kube/config"                              
             #sudo bash -c "KUBECONFIG='$HOME/.kube/config'"
