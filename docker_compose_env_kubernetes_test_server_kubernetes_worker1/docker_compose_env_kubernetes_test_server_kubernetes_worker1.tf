@@ -81,16 +81,23 @@ resource "aws_security_group" "kubernetes_test-kubernetes_worker1-sg-ssh-local" 
   }
   
   ingress {
+    from_port   = 6443
+    to_port     = 6443
+    protocol    = "tcp"
+    cidr_blocks = local.subnet_cidr
+  }
+  
+  ingress {
     from_port   = 8285
     to_port     = 8285
-    protocol    = "tcp"
+    protocol    = "udp"
     cidr_blocks = local.subnet_cidr
   }
   
   ingress {
     from_port   = 8472
     to_port     = 8472
-    protocol    = "tcp"
+    protocol    = "udp"
     cidr_blocks = local.subnet_cidr
   }
   
