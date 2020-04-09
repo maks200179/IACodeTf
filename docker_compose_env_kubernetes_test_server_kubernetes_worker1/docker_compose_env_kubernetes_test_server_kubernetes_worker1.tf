@@ -77,8 +77,19 @@ resource "aws_security_group" "kubernetes_test-kubernetes_worker1-sg-ssh-local" 
     protocol    = "tcp"
     cidr_blocks = local.subnet_cidr
   }
- 
-
+  ingress {
+    from_port   = 8285
+    to_port     = 8285
+    protocol    = "tcp"
+    cidr_blocks = local.subnet_cidr
+  }
+  ingress {
+    from_port   = 8472
+    to_port     = 8472
+    protocol    = "tcp"
+    cidr_blocks = local.subnet_cidr
+  }
+  
  
   tags = {
     Name = "kubernetes_test-kubernetes_worker1-sg-ssh-local"
@@ -128,7 +139,13 @@ resource "aws_security_group" "kubernetes_test-kubernetes_worker1-sg-kubernetes-
     protocol    = "tcp"
     cidr_blocks = local.subnet_cidr
   }
- 
+  
+  ingress {
+    from_port   = 2379
+    to_port     = 2380
+    protocol    = "tcp"
+    cidr_blocks = local.subnet_cidr
+  }
  
   tags = {
     Name = "kubernetes_test-kubernetes_worker1-sg-kubernetes-4789"
