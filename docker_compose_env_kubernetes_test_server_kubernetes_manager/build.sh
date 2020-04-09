@@ -181,8 +181,7 @@ EOF
 
             sudo kubeadm init --service-cidr=10.10.0.0/24  --pod-network-cidr=10.244.0.0/16  | grep "Your Kubernetes control-plane has initialized" | sed 's/\x1b\[[0-9;]*m//g' 
             
-            #--service-cidr=10.99.0.0/24 --pod-network-cidr=10.244.0.0/16  | grep "Your Kubernetes control-plane has initialized" | sed 's/\x1b\[[0-9;]*m//g' 
-            
+             
             #for root
             mkdir -p $HOME/.kube                                                                                                 
             sudo yes | cp -i /etc/kubernetes/admin.conf $HOME/.kube/config                        
@@ -191,16 +190,27 @@ EOF
             #sudo bash -c "KUBECONFIG='$HOME/.kube/config'"
             #export KUBECONFIG=$HOME/.kube/config                                            3>&1 1>/dev/null 2>&3
             
+            
+            sudo mkdir /mnt/data
+            sudo mkdir /mnt/data1
+            sudo mkdir /mnt/data2
+            sudo mkdir /mnt/data3
+            sudo mkdir /mnt/data4
+            sudo mkdir /mnt/data5
+            
+            
             #for root 
             #sudo export KUBECONFIG=/etc/kubernetes/admin.conf
             
-            #for --pod-network-cidr=10.244.0.0/16
-            #sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/2140ac876ef134e0ed5af15c65e414cf26827915/Documentation/kube-flannel.yml > /dev/null 
+            sudo kubectl taint nodes --all node-role.kubernetes.io/master-
+
+            
+            sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/2140ac876ef134e0ed5af15c65e414cf26827915/Documentation/kube-flannel.yml > /dev/null 
             
             #sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml > /dev/null 
             #sudo kubectl apply -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml
             #sudo kubectl create rolebinding -n kube-system configmaps --role=extension-apiserver-authentication-reader --serviceaccount=kube-system:cloud-controller-manager
-            sudo kubectl taint nodes --all node-role.kubernetes.io/master-
+           
             
         else 
             
