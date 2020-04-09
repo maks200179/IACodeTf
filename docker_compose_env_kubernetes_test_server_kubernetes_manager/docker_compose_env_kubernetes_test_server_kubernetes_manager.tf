@@ -43,19 +43,6 @@ resource "aws_security_group" "kubernetes_test-kubernetes_manager-sg-ssh" {
     cidr_blocks = local.my_ip
   }
   
-  ingress {
-    from_port   = 6443
-    to_port     = 6443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
  
   // allow access to the internet
   egress {
@@ -85,47 +72,46 @@ resource "aws_security_group" "kubernetes_test-kubernetes_manager-sg-ssh-local" 
     cidr_blocks = local.subnet_cidr
   }
   
-  ingress {
-    from_port   = 959
-    to_port     = 959
-    protocol    = "udp"
-    cidr_blocks = local.subnet_cidr
-  } 
+  #ingress {
+  #  from_port   = 959
+  #  to_port     = 959
+  #  protocol    = "udp"
+   # cidr_blocks = local.subnet_cidr
+  #} 
   
-  ingress {
-    from_port   = 68
-    to_port     = 68
-    protocol    = "udp"
-    cidr_blocks = local.subnet_cidr
-  } 
+  #ingress {
+ #   from_port   = 68
+ #   to_port     = 68
+ #   protocol    = "udp"
+#    cidr_blocks = local.subnet_cidr
+#  } 
   
-  ingress {
-    from_port   = 111
-    to_port     = 111
-    protocol    = "udp"
-    cidr_blocks = local.subnet_cidr
-  } 
+##  from_port   = 111
+  #  to_port     = 111
+  #  protocol    = "udp"
+  #  cidr_blocks = local.subnet_cidr
+ # } 
   
-  ingress {
-    from_port   = 8472
-    to_port     = 8472
-    protocol    = "udp"
-    cidr_blocks = local.subnet_cidr
-  } 
+ # ingress {
+  #  from_port   = 8472
+  #  to_port     = 8472
+  #  protocol    = "udp"
+  #  cidr_blocks = local.subnet_cidr
+ # } 
   
-  ingress {
-    from_port   = 323
-    to_port     = 323
-    protocol    = "udp"
-    cidr_blocks = local.subnet_cidr
-  } 
+  #ingress {
+  #  from_port   = 323
+  #  to_port     = 323
+  #  protocol    = "udp"
+  #  cidr_blocks = local.subnet_cidr
+ #} 
   
-  ingress {
-    from_port   = 6379
-    to_port     = 6379
-    protocol    = "udp"
-    cidr_blocks = local.subnet_cidr
-  } 
+  #ingress {
+  #  from_port   = 6379
+   # to_port     = 6379
+   # protocol    = "udp"
+   # cidr_blocks = local.subnet_cidr
+ # } 
   
   tags = {
     Name = "kubernetes_test-kubernetes_manager-sg-ssh-local"
@@ -140,6 +126,15 @@ resource "aws_security_group" "kubernetes_test-kubernetes_manager-sg-kubernetes"
   vpc_id      = "${data.aws_vpc.kubernetes_test-vpc.id}"
  
   ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = local.subnet_cidr
+  }
+  
+  
+  
+  ingress {
     from_port   = 6443
     to_port     = 6443
     protocol    = "tcp"
@@ -147,13 +142,20 @@ resource "aws_security_group" "kubernetes_test-kubernetes_manager-sg-kubernetes"
   }
   
   ingress {
-    from_port   = 443
-    to_port     = 443
+    from_port   = 2379
+    to_port     = 2380
     protocol    = "tcp"
     cidr_blocks = local.subnet_cidr
   }
 
- 
+  ingress {
+    from_port   = 10250
+    to_port     = 10255
+    protocol    = "tcp"
+    cidr_blocks = local.subnet_cidr
+  }
+  
+  
   tags = {
     Name = "kubernetes_test-kubernetes_manager-sg-kubernetes"
   }
@@ -166,33 +168,11 @@ resource "aws_security_group" "kubernetes_test-kubernetes_manager-sg-kubernetes-
   description = "Allow kubernetes-registry inbound traffic"
   vpc_id      = "${data.aws_vpc.kubernetes_test-vpc.id}"
  
-  ingress {
-    from_port   = 2379
-    to_port     = 2379
-    protocol    = "tcp"
-    cidr_blocks = local.subnet_cidr
-  }
+
+
   
-  ingress {
-    from_port   = 2376
-    to_port     = 2376
-    protocol    = "tcp"
-    cidr_blocks = local.subnet_cidr
-  }
-  
-  ingress {
-    from_port   = 8472
-    to_port     = 8472
-    protocol    = "tcp"
-    cidr_blocks = local.subnet_cidr
-  }
-  
-  ingress {
-    from_port   = 9135
-    to_port     = 9135
-    protocol    = "tcp"
-    cidr_blocks = local.subnet_cidr
-  }
+
+
  
   tags = {
     Name = "kubernetes_test-kubernetes_manager-sg-kubernetes-registry"
@@ -208,33 +188,6 @@ resource "aws_security_group" "kubernetes_test-kubernetes_manager-sg-kubernetes-
   description = "Allow kubernetes-2376 inbound traffic"
   vpc_id      = "${data.aws_vpc.kubernetes_test-vpc.id}"
  
-  ingress {
-    from_port   = 2380
-    to_port     = 2380
-    protocol    = "tcp"
-    cidr_blocks = local.subnet_cidr
-  }
- 
-  ingress {
-    from_port   = 2381
-    to_port     = 2381
-    protocol    = "tcp"
-    cidr_blocks = local.subnet_cidr
-  }
-  
-  ingress {
-    from_port   = 8472
-    to_port     = 8472
-    protocol    = "udp"
-    cidr_blocks = local.subnet_cidr
-  }
- 
-  ingress {
-    from_port   = 8285
-    to_port     = 8285
-    protocol    = "udp"
-    cidr_blocks = local.subnet_cidr
-  }
   
   tags = {
     Name = "kubernetes_test-kubernetes_manager-sg-kubernetes-2376"
@@ -250,13 +203,7 @@ resource "aws_security_group" "kubernetes_test-kubernetes_manager-sg-kubernetes-
   description = "Allow kubernetes-7946 inbound traffic"
   vpc_id      = "${data.aws_vpc.kubernetes_test-vpc.id}"
  
-  ingress {
-    from_port   = 10250
-    to_port     = 10250
-    protocol    = "tcp"
-    cidr_blocks = local.subnet_cidr
-  }
- 
+
  
   tags = {
     Name = "kubernetes_test-kubernetes_manager-sg-kubernetes-7946"
@@ -270,24 +217,6 @@ resource "aws_security_group" "kubernetes_test-kubernetes_manager-sg-kubernetes-
   description = "Allow kubernetes-4789 inbound traffic"
   vpc_id      = "${data.aws_vpc.kubernetes_test-vpc.id}"
  
-  ingress {
-    from_port   = 10251
-    to_port     = 10251
-    protocol    = "tcp"
-    cidr_blocks = local.subnet_cidr
-  }
-  ingress {
-    from_port   = 10252
-    to_port     = 10252
-    protocol    = "tcp"
-    cidr_blocks = local.subnet_cidr
-  }
-  ingress {
-    from_port   = 10255
-    to_port     = 10255
-    protocol    = "tcp"
-    cidr_blocks = local.subnet_cidr
-  }
  
  
   tags = {
