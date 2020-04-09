@@ -202,11 +202,12 @@ EOF
             #for root 
             #sudo export KUBECONFIG=/etc/kubernetes/admin.conf
             
-            sudo kubectl taint nodes --all node-role.kubernetes.io/master-
+            
 
             
             sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/2140ac876ef134e0ed5af15c65e414cf26827915/Documentation/kube-flannel.yml > /dev/null 
             
+            sudo kubectl taint nodes --all node-role.kubernetes.io/master-
             #sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml > /dev/null 
             #sudo kubectl apply -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml
             #sudo kubectl create rolebinding -n kube-system configmaps --role=extension-apiserver-authentication-reader --serviceaccount=kube-system:cloud-controller-manager
