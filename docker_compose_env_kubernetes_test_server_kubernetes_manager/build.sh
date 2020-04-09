@@ -190,13 +190,7 @@ EOF
             #sudo bash -c "KUBECONFIG='$HOME/.kube/config'"
             #export KUBECONFIG=$HOME/.kube/config                                            3>&1 1>/dev/null 2>&3
             
-            
-            sudo mkdir /mnt/data
-            sudo mkdir /mnt/data1
-            sudo mkdir /mnt/data2
-            sudo mkdir /mnt/data3
-            sudo mkdir /mnt/data4
-            sudo mkdir /mnt/data5
+            sudo mkdir /mnt/data{0..5}
             
             
             #for root 
