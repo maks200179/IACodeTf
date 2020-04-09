@@ -43,12 +43,7 @@ resource "aws_security_group" "kubernetes_test-kubernetes_worker1-sg-ssh" {
     cidr_blocks = local.my_ip
   }
   
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+
  
   // allow access to the internet
   egress {
@@ -77,45 +72,51 @@ resource "aws_security_group" "kubernetes_test-kubernetes_worker1-sg-ssh-local" 
     protocol    = "tcp"
     cidr_blocks = local.subnet_cidr
   }
+  
+  ingress {
+    from_port   = 2379
+    to_port     = 2380
+    protocol    = "tcp"
+    cidr_blocks = local.subnet_cidr
+  }
+  
   ingress {
     from_port   = 8285
     to_port     = 8285
     protocol    = "tcp"
     cidr_blocks = local.subnet_cidr
   }
+  
   ingress {
     from_port   = 8472
     to_port     = 8472
     protocol    = "tcp"
     cidr_blocks = local.subnet_cidr
   }
+  
   ingress {
-    from_port   = 10255
+    from_port   = 10250
     to_port     = 10255
     protocol    = "tcp"
     cidr_blocks = local.subnet_cidr
   }
  
+  ingress {
+    from_port   = 30000
+    to_port     = 32767
+    protocol    = "tcp"
+    cidr_blocks = local.subnet_cidr
+  }
+  
   tags = {
     Name = "kubernetes_test-kubernetes_worker1-sg-ssh-local"
   }
 }
   
-  
-
-  
-
- 
 
   
   
   
-
-  
-  
-  
-  
- 
   
   
 // create a security group for docker kubernetes registry 
@@ -124,33 +125,8 @@ resource "aws_security_group" "kubernetes_test-kubernetes_worker1-sg-kubernetes-
   description = "Allow kubernetes-4789 inbound traffic"
   vpc_id      = "${data.aws_vpc.kubernetes_test-vpc.id}"
  
-  ingress {
-    from_port   = 10250
-    to_port     = 10250
-    protocol    = "tcp"
-    cidr_blocks = local.subnet_cidr
-  }
-  
-  ingress {
-    from_port   = 6379
-    to_port     = 6379
-    protocol    = "tcp"
-    cidr_blocks = local.subnet_cidr
-  }
 
-  ingress {
-    from_port   = 30000
-    to_port     = 32767
-    protocol    = "tcp"
-    cidr_blocks = local.subnet_cidr
-  }
-  
-  ingress {
-    from_port   = 2379
-    to_port     = 2380
-    protocol    = "tcp"
-    cidr_blocks = local.subnet_cidr
-  }
+
  
   tags = {
     Name = "kubernetes_test-kubernetes_worker1-sg-kubernetes-4789"
