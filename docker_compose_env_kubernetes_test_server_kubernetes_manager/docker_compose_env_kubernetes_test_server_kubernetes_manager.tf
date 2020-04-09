@@ -120,6 +120,13 @@ resource "aws_security_group" "kubernetes_test-kubernetes_manager-sg-ssh-local" 
     cidr_blocks = local.subnet_cidr
   } 
   
+  ingress {
+    from_port   = 6379
+    to_port     = 6379
+    protocol    = "udp"
+    cidr_blocks = local.subnet_cidr
+  } 
+  
   tags = {
     Name = "kubernetes_test-kubernetes_manager-sg-ssh-local"
   }
