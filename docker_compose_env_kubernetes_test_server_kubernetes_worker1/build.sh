@@ -51,6 +51,7 @@ done
         fi
         
         sudo mkdir /etc/docker
+        #sudo mkdir /etc/docker
         # Setup daemon.
         cat > /etc/docker/daemon.json <<EOF
         {
@@ -92,9 +93,10 @@ repo_gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 EOF
         
-            sudo yum install -y kubelet kubeadm kubectl 3>&1 1>/dev/null 2>&3
-            sudo systemctl enable kubelet               3>&1 1>/dev/null 2>&3
-            sudo systemctl start kubelet                3>&1 1>/dev/null 2>&3
+            sudo yum install -y kubelet kubeadm kubectl >/dev/null 2>&1
+            sudo systemctl enable kubelet               >/dev/null 2>&1
+            sudo systemctl start kubelet                >/dev/null 2>&1
+            sudo yum install -y tcpdump                 >/dev/null 2>&1
                 
                 
         fi
@@ -148,7 +150,7 @@ EOF
                  sudo su - root -c
                  #echo $HOME
                  #sudo -s
-                 sudo kubectl cluster-info  | egrep --color  'Kubernetes master' | sed 's/\x1b\[[0-9;]*m//g'
+                 sudo kubectl cluster-info  | egrep --color  'Kubernetes master' 3>&1 1>/dev/null 2>&3 | sed 's/\x1b\[[0-9;]*m//g' 
                 
         fi
         
@@ -177,22 +179,34 @@ EOF
             #sudo docker swarm init  | grep 'docker swarm join --token'
             
 
-            sudo kubeadm init --node-name=$(hostname -f) --pod-network-cidr=192.168.0.0/16  
+            sudo kubeadm init --service-cidr=10.10.0.0/24  --pod-network-cidr=10.244.0.0/16  | grep "Your Kubernetes control-plane has initialized" | sed 's/\x1b\[[0-9;]*m//g' 
             
+             
             #for root
-            mkdir -p $HOME/.kube                                                            
-            sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config                        
-            sudo chown $(id -u):$(id -g) $HOME/.kube/config                                 
-            export KUBECONFIG="$HOME/.kube/config"
-            sudo bash -c "KUBECONFIG='$HOME/.kube/config'"
+            mkdir -p $HOME/.kube                                                                                                 
+            sudo yes | cp -i /etc/kubernetes/admin.conf $HOME/.kube/config                        
+            sudo chown $(id -u):$(id -g) $HOME/.kube/config                                                
+            export KUBECONFIG="$HOME/.kube/config"                              
+            #sudo bash -c "KUBECONFIG='$HOME/.kube/config'"
             #export KUBECONFIG=$HOME/.kube/config                                            3>&1 1>/dev/null 2>&3
+            
+            sudo mkdir /mnt/data{0..5}
+            
             
             #for root 
             #sudo export KUBECONFIG=/etc/kubernetes/admin.conf
             
-            sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml     
+            
+
+            
+            sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/2140ac876ef134e0ed5af15c65e414cf26827915/Documentation/kube-flannel.yml > /dev/null 
+            
+            sudo kubectl taint nodes --all node-role.kubernetes.io/master-
+            #sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml > /dev/null 
             #sudo kubectl apply -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml
-                
+            #sudo kubectl create rolebinding -n kube-system configmaps --role=extension-apiserver-authentication-reader --serviceaccount=kube-system:cloud-controller-manager
+           
+            
         else 
             
             echo "docker-compose or docker not  installed on target server check logs."
