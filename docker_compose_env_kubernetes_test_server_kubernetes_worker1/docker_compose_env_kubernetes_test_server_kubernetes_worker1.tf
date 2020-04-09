@@ -2,7 +2,7 @@ provider "aws" {}
 
 locals {
   my_ip        = ["213.57.87.195/32","35.158.209.228/32","35.158.99.12/32"]
-  subnet_cidr  = ["10.0.0.0/16"]
+  subnet_cidr  = ["10.0.0.0/8"]
 }
 
 
@@ -114,7 +114,13 @@ resource "aws_security_group" "kubernetes_test-kubernetes_worker1-sg-kubernetes-
     protocol    = "tcp"
     cidr_blocks = local.subnet_cidr
   }
-
+  
+  ingress {
+    from_port   = 6379
+    to_port     = 6379
+    protocol    = "tcp"
+    cidr_blocks = local.subnet_cidr
+  }
 
   ingress {
     from_port   = 30000
