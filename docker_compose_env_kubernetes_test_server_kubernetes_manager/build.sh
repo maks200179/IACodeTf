@@ -165,7 +165,7 @@ EOF
             sudo hostnamectl set-hostname worker-node                                   
             ipaddres=$(sudo curl --fail --silent --show-error http://169.254.169.254/latest/meta-data/local-ipv4)     
             echo "${ipaddres}" "worker-node" >> /etc/hosts                                  
-            
+            sudo mkdir /mnt/data{0..10}
             sudo kubeadm join "${ipaddr}" --token "${manager_token}"  --discovery-token-ca-cert-hash  "${discovery_token}"                   
                 
         fi
@@ -190,7 +190,7 @@ EOF
             #sudo bash -c "KUBECONFIG='$HOME/.kube/config'"
             #export KUBECONFIG=$HOME/.kube/config                                            3>&1 1>/dev/null 2>&3
             
-            sudo mkdir /mnt/data{0..5}
+            sudo mkdir /mnt/data{0..10}
             
             
             #for root 
