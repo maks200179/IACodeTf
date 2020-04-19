@@ -216,25 +216,4 @@ EOF
     fi
     
     
-    if [[ $rebuild_swarm_manager == "yes" ]] ; then
-        if  [[ ! -z $(yum list installed | grep docker-ce.x86_64) ]] && [[ ! -z $(docker-compose --version) ]] ; then
-        #base image build and push
-        #sudo docker-compose -f "${DIR}"/docker-compose_base_images.yml build 3>&1 1>/dev/null 2>&3
-        #sudo docker-compose -f "${DIR}"/docker-compose_base_images.yml push 3>&1 1>/dev/null 2>&3
-        
-        #build all other images
-        #sudo docker-compose -f "${DIR}"/docker-compose.full.yml build 3>&1 1>/dev/null 2>&3
-        #sudo docker-compose -f "${DIR}"/docker-compose.full.yml push 3>&1 1>/dev/null 2>&3
-        
-        sudo mkdir -p /mysql_data
-        sudo mkdir -p /mysql_conf/dbbackup
-        sudo mkdir -p /mysql_conf/log
-        
-        #deploy stack 
-        #sudo docker stack deploy --prune --resolve-image always --with-registry-auth  --compose-file "${DIR}"/docker-compose.yml stackdemo 
-        
-        #restore database 
-        #sudo  bash "${DIR}"/db_mysql5.6/conf/crone_copy_last_db_backup_from_s3.sh 2>/dev/null 
-        
-        fi
-    fi
+    
