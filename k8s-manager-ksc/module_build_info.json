@@ -1,6 +1,6 @@
 {
     "ssh_key_name"       : "kubernetes_test_ssh_key.pem",
-    "network_module_name": "aws_kubernetes_test_network_terraform_conf",
+    "network_module_name": "None",
     "username"           : "centos",
     "swarm"              : "True",
     "manager"            : "True"
