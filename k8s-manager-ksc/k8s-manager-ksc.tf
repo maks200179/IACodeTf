@@ -7,7 +7,7 @@ locals {
   cluster_name = "test-eks-${random_string.suffix.result}"
 }
 
- "aws_availability_zones" "available" {
+data "aws_availability_zones" "available" {
 }
 module "eks" {
   source = "cookpad/eks/aws"
