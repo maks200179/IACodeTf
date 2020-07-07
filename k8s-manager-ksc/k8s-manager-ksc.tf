@@ -23,7 +23,7 @@ module "my-cluster" {
   cluster_name    = "my-cluster"
   cluster_version = "1.16"
   subnets         = ["subnet-abcde012", "subnet-bcde012a", "subnet-fghi345a"]
-  vpc_id          = "vpc-1234556abcdef"
+  vpc_id          = "vpc-4aca6e21"
 
   worker_groups = [
     {
