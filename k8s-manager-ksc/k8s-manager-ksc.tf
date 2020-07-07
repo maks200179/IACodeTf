@@ -2,6 +2,16 @@ provider "aws" {
   region  = var.region
 }
 
+locals {
+  cluster_name = "test-eks-${random_string.suffix.result}"
+}
+
+resource "random_string" "suffix" {
+  length  = 8
+  special = false
+}
+
+
 data "aws_eks_cluster" "cluster" {
   name = module.my-cluster.cluster_id
 }
