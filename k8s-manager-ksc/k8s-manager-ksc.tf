@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 locals {
-  cluster_name = "test-eks-${random_string.suffix.result}"
+  cluster_name = "test-eks-9chRfdVG"
 }
 
 resource "random_string" "suffix" {
