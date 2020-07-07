@@ -15,5 +15,5 @@ module "eks" {
 
   cluster_name       = "hal-9000"
   cidr_block         = "10.4.0.0/16"
-  availability_zones = ["us-east-1a", "us-east-1b", "us-east-1c"]
+  availability_zones = ["us-west-2a", "us-west-2b", "us-west-2c"]
 }
