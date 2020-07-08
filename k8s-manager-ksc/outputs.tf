@@ -7,7 +7,7 @@ data "template_file" "json_config" {
     "securitygroup": "${module.my-cluster.cluster_security_group_id}",
     "kubectl_config": "${module.my-cluster.kubeconfig}",
     "config_map_aws_auth": "${module.my-cluster.config_map_aws_auth}"
-}
+
 }
 EOF
 }
