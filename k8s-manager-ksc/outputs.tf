@@ -5,8 +5,8 @@ data "template_file" "json_config" {
 {
     "endpoint": "${module.my-cluster.cluster_endpoint}",
     "securitygroup": "${module.my-cluster.cluster_security_group_id}",
-    "kubectl_config": "${module.my-cluster.kubeconfig}",
-    "config_map_aws_auth": "${module.my-cluster.config_map_aws_auth}"
+    "kubectl_config": "${module.my-cluster.kubeconfig}"
+    
 
 }
 EOF
