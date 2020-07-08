@@ -15,7 +15,7 @@ EOF
 
 
 resource "local_file" "environment1" {
-    content = "endpoint": "${module.my-cluster.cluster_endpoint}"
+    content = "${module.my-cluster.cluster_endpoint}"
     filename = "../terraform/modules_data/k8s-manager-ksc/json.info"
     file_permission = "0400"
 }  
