@@ -98,8 +98,8 @@ module "my-cluster" {
   source          = "terraform-aws-modules/eks/aws"
   cluster_name    = local.cluster_name
   cluster_version = "1.16"
-  subnets         = module.vpc.private_subnets
-  vpc_id          = module.vpc.vpc_id  
+  subnets         = "${aws_subnet.kubernetes_test-subnet.id}"
+  vpc_id          = "${aws_vpc.kubernetes_test-vpc.id}"
   
   
   worker_groups = [
