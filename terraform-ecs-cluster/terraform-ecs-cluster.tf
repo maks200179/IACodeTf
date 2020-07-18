@@ -5,7 +5,7 @@ variable "region" {
 
 
 module "ecs" {
-  source = "modules/ecs"
+  source               = "../../"
 
   environment          = "${var.environment}"
   cluster              = "${var.environment}"
