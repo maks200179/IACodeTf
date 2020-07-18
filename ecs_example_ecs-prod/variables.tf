@@ -1,5 +1,21 @@
-module "ecs_example_ecs-prod" {
-  source  = "karan6190/ecs/aws//examples/ecs-prod"
-  version = "1.0.0"
-  # insert the 3 required variables here
+variable "AWS_ACCESS_KEY" {
+  description = "Programmatic AWS Access Key of Desired AWS Account"
+}
+
+variable "AWS_SECRET_KEY" {
+  description = "Programmatic AWS Secret Key of Desired AWS Account"
+}
+
+variable "AWS_REGION" {
+  description = "Region where you have to Provision Infrastructure"
+}
+
+variable "VPC_NAME" {
+  description = "Product Name"
+  default     = "fusion"
+}
+
+variable "ENV" {
+  description = "Type of Environment like Prod, Dev, Staging"
+  default     = "prod"
 }
