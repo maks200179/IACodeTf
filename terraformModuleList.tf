@@ -16,3 +16,7 @@ module "aws_kubernetes_test_network_terraform_conf" {
  module "k8s-manager-ksc" {
   source = "../moduls/iacode/k8s-manager-ksc"
 } 
+   
+ module "ecs_example_ecs-prod" {
+  source = "../moduls/iacode/ecs_example_ecs-prod"
+}    
