@@ -4,49 +4,118 @@ variable "region" {
 
 
 
+locals {
+  name        = "complete-ecs"
+  environment = "dev"
+
+  # This is the convention we use to know what belongs to each other
+  ec2_resources_name = "${local.name}-${local.environment}"
+}
+
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "~> 2.0"
+
+  name = local.name
+
+  cidr = "10.1.0.0/16"
+
+  azs             = [data.aws_availability_zones.available.names[0], data.aws_availability_zones.available.names[1]]
+  private_subnets = ["10.1.1.0/24", "10.1.2.0/24"]
+  public_subnets  = ["10.1.11.0/24", "10.1.12.0/24"]
+
+  enable_nat_gateway = true
+
+  tags = {
+    Environment = local.environment
+    Name        = local.name
+  }
+}
+
+#----- ECS --------
 module "ecs" {
-  source               = "../../"
-
-  environment          = "${var.environment}"
-  cluster              = "${var.environment}"
-  cloudwatch_prefix    = "${var.environment}"           #See ecs_instances module when to set this and when not!
-  vpc_cidr             = "${var.vpc_cidr}"
-  public_subnet_cidrs  = "${var.public_subnet_cidrs}"
-  private_subnet_cidrs = "${var.private_subnet_cidrs}"
-  availability_zones   = "${var.availability_zones}"
-  max_size             = "${var.max_size}"
-  min_size             = "${var.min_size}"
-  desired_capacity     = "${var.desired_capacity}"
-  key_name             = "${aws_key_pair.ecs.key_name}"
-  instance_type        = "${var.instance_type}"
-  ecs_aws_ami          = "${var.ecs_aws_ami}"
+  source             = "../../"
+  name               = local.name
+  container_insights = true
 }
 
-resource "aws_key_pair" "ecs" {
-  key_name   = "ecs-key-${var.environment}"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtMljjj0Ccxux5Mssqraa/iHHxheW+m0Rh17fbd8t365y9EwBn00DN/0PjdU2CK6bjxwy8BNGXWoUXiSDDtGqRupH6e9J012yE5kxhpXnnkIcLGjkAiflDBVV4sXS4b3a2LSXL5Dyb93N2GdnJ03FJM4qDJ8lfDQxb38eYHytZkmxW14xLoyW5Hbyr3SXhdHC2/ecdp5nLNRwRWiW6g9OA6jTQ3LgeOZoM6dK4ltJUQOakKjiHsE+jvmO0hJYQN7+5gYOw0HHsM+zmATvSipAWzoWBWcmBxAbcdW0R0KvCwjylCyRVbRMRbSZ/c4idZbFLZXRb7ZJkqNJuy99+ld41 ecs@aws.fake"
+module "ec2-profile" {
+  source = "../../modules/ecs-instance-profile"
+  name   = local.name
 }
 
-variable "vpc_cidr" {}
-variable "environment" {}
-variable "max_size" {}
-variable "min_size" {}
-variable "desired_capacity" {}
-variable "instance_type" {}
-variable "ecs_aws_ami" {}
+#----- ECS  Services--------
 
-variable "private_subnet_cidrs" {
-  type = "list"
+module "hello-world" {
+  source     = "./service-hello-world"
+  cluster_id = module.ecs.this_ecs_cluster_id
 }
 
-variable "public_subnet_cidrs" {
-  type = "list"
+#----- ECS  Resources--------
+
+#For now we only use the AWS ECS optimized ami <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html>
+data "aws_ami" "amazon_linux_ecs" {
+  most_recent = true
+
+  owners = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["amzn-ami-*-amazon-ecs-optimized"]
+  }
+
+  filter {
+    name   = "owner-alias"
+    values = ["amazon"]
+  }
 }
 
-variable "availability_zones" {
-  type = "list"
+module "this" {
+  source  = "terraform-aws-modules/autoscaling/aws"
+  version = "~> 3.0"
+
+  name = local.ec2_resources_name
+
+  # Launch configuration
+  lc_name = local.ec2_resources_name
+
+  image_id             = data.aws_ami.amazon_linux_ecs.id
+  instance_type        = "t2.micro"
+  security_groups      = [module.vpc.default_security_group_id]
+  iam_instance_profile = module.ec2-profile.this_iam_instance_profile_id
+  user_data            = data.template_file.user_data.rendered
+
+  # Auto scaling group
+  asg_name                  = local.ec2_resources_name
+  vpc_zone_identifier       = module.vpc.private_subnets
+  health_check_type         = "EC2"
+  min_size                  = 1
+  max_size                  = 2
+  desired_capacity          = 1
+  wait_for_capacity_timeout = 0
+
+  tags = [
+    {
+      key                 = "Environment"
+      value               = local.environment
+      propagate_at_launch = true
+    },
+    {
+      key                 = "Cluster"
+      value               = local.name
+      propagate_at_launch = true
+    },
+  ]
 }
 
-output "default_alb_target_group" {
-  value = "${module.ecs.default_alb_target_group}"
+data "template_file" "user_data" {
+  template = file("${path.module}/templates/user-data.sh")
+
+  vars = {
+    cluster_name = local.name
+  }
 }
