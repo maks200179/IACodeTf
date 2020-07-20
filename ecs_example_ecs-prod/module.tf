@@ -131,7 +131,7 @@ resource "aws_iam_role" "ecs_service_role" {
 
 resource "aws_iam_role_policy" "ecs_service_role_policy" {
     name = "ecs_service_role_policy"
-    policy = "${file("policies/ecs-service-role-policy.json")}"
+    policy = "${file("${path.module}/policies/ecs-service-role-policy.json")}"
     role = "${aws_iam_role.ecs_service_role.id}"
 }
 
