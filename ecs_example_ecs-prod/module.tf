@@ -16,7 +16,7 @@ module "vpc" {
 }
 
 module "ecs_cluster" {
-  source = "anrim/ecs/aws//modules/cluster"
+  source = "anrim/modules/cluster"
 
   name = "app-dev"
   vpc_id      = "${module.vpc.vpc_id}"
@@ -28,7 +28,7 @@ module "ecs_cluster" {
 }
 
 module "alb" {
-  source = "anrim/ecs/aws//modules/alb"
+  source = "anrim/modules/alb"
 
   name            = "app-dev"
   host_name       = "app"
@@ -71,7 +71,7 @@ EOF
 }
 
 module "ecs_service_app" {
-  source = "anrim/ecs/aws//modules/service"
+  source = "anrim/modules/service"
 
   name = "app-dev"
   alb_target_group_arn = "${module.alb.target_group_arn}"
