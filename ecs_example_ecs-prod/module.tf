@@ -1,7 +1,19 @@
-resource "aws_key_pair" "alex" {
-    key_name = "alex-key"
-    public_key = "${file(var.ssh_pubkey_file)}"
+locals {
+  key_name = "kubernetes_test_ssh_acess_key"
 }
+
+
+resource "tls_private_key" "kubernetes_test_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "aws_key_pair" "generated_key" {
+  key_name   = local.key_name
+  public_key = "${tls_private_key.kubernetes_test_key.public_key_openssh}"
+}
+
+
 
 resource "aws_vpc" "main" {
     cidr_block = "10.0.0.0/16"
@@ -107,7 +119,7 @@ resource "aws_launch_configuration" "ecs" {
     security_groups = ["${aws_security_group.ecs.id}"]
     iam_instance_profile = "${aws_iam_instance_profile.ecs.name}"
     # TODO: is there a good way to make the key configurable sanely?
-    key_name = "${aws_key_pair.alex.key_name}"
+    key_name = "${tls_private_key.kubernetes_test_key.public_key_openssh}"
     associate_public_ip_address = true
     user_data = "#!/bin/bash\necho ECS_CLUSTER='${var.ecs_cluster_name}' > /etc/ecs/ecs.config"
 }
