@@ -19,7 +19,7 @@ variable "amis" {
     description = "Which AMI to spawn. Defaults to the AWS ECS optimized images."
     # TODO: support other regions.
     default = {
-        us-east-2 = "ami-6f68cf0f"
+        us-east-2 = "ami-03fcfd2c91083b3e3"
     }
 }
 
