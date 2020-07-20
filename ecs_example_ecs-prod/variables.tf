@@ -1,3 +1,9 @@
+  
+variable "region" {
+  default = "us-east-2"
+}
+
+
 # TODO: support multiple availability zones, and default to it.
 variable "availability_zone" {
     description = "The availability zone"
