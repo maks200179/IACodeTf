@@ -1,5 +1,5 @@
 locals {
-  key_name = "kubernetes_test_ssh_acess_key"
+  key_name = "ecs_acess_key"
 }
 
 
