@@ -21,6 +21,4 @@ module "aws_kubernetes_test_network_terraform_conf" {
   source = "../moduls/iacode/terraform-ecs-cluster"
 } 
  
- module "ecs_example_ecs-prod" {
-  source = "../moduls/iacode/ecs_example_ecs-prod"
-} 
+
