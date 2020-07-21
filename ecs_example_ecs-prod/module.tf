@@ -101,16 +101,7 @@ resource "aws_ecs_cluster" "main" {
     name = "${var.ecs_cluster_name}"
 }
 
-resource "aws_autoscaling_group" "ecs-cluster" {
-    availability_zones = ["${var.availability_zone}"]
-    name = "ECS ${var.ecs_cluster_name}"
-    min_size = "${var.autoscale_min}"
-    max_size = "${var.autoscale_max}"
-    desired_capacity = "${var.autoscale_desired}"
-    health_check_type = "EC2"
-    launch_configuration = "${aws_launch_configuration.ecs.name}"
-    vpc_zone_identifier = ["${aws_subnet.main.id}"]
-}
+
 
 
 
@@ -154,4 +145,16 @@ resource "aws_launch_configuration" "ecs" {
     key_name = "${local.key_name}"
     associate_public_ip_address = true
     user_data = "#!/bin/bash\necho ECS_CLUSTER='${var.ecs_cluster_name}' > /etc/ecs/ecs.config"
+}
+
+
+resource "aws_autoscaling_group" "ecs-cluster" {
+    availability_zones = ["${var.availability_zone}"]
+    name = "ECS ${var.ecs_cluster_name}"
+    min_size = "${var.autoscale_min}"
+    max_size = "${var.autoscale_max}"
+    desired_capacity = "${var.autoscale_desired}"
+    health_check_type = "EC2"
+    launch_configuration = "${aws_launch_configuration.ecs.name}"
+    vpc_zone_identifier = ["${aws_subnet.main.id}"]
 }
