@@ -1,7 +1,7 @@
 [
     {
         "name": "test-http",
-        "image": "nginx",
+        "image": "nginx:stable-alpine",
         "cpu": 10,
         "memory": 512,
         "links": [],
