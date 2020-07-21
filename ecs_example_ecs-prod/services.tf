@@ -9,14 +9,14 @@ resource "aws_elb" "test-http" {
         lb_port = 80
 
         instance_protocol = "http"
-        instance_port = 80
+        instance_port = 8080
     }
 
     health_check {
         healthy_threshold = 3
         unhealthy_threshold = 2
         timeout = 3
-        target = "HTTP:80/hello-world"
+        target = "HTTP:8080/hello-world"
         interval = 5
     }
 
@@ -39,6 +39,6 @@ resource "aws_ecs_service" "test-http" {
     load_balancer {
         elb_name = "${aws_elb.test-http.id}"
         container_name = "test-http"
-        container_port = 80
+        container_port = 8080
     }
 }
