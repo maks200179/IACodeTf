@@ -241,7 +241,7 @@ resource "aws_security_group" "kubernetes_test-kubernetes_manager-sg-kubernetes-
 // create  CentOS linux instances
 resource "aws_instance" "i-centos-linux-kubernetes_manager_kubernetes_test" {
   ami                         = "ami-0f2b4fc905b0bd1f1"
-  instance_type               = "t2.micro"
+  instance_type               = "t2.nano"
   key_name                    = "kubernetes_test_ssh_acess_key"
   vpc_security_group_ids      = [
                                  "${aws_security_group.kubernetes_test-kubernetes_manager-sg-ssh.id}",
