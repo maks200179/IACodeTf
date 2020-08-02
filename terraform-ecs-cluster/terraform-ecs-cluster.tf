@@ -44,7 +44,7 @@ module "ecs" {
 }
 
 module "ec2-profile" {
-  source = "../../iacode/ecs-instance-profile"
+  source = "../../modules/ecs-instance-profile"
   name   = local.name
 }
 
