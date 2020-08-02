@@ -130,7 +130,7 @@ resource "aws_ecs_task_definition" "frankly_ecs_task" {
 
   placement_constraints {
     type       = "memberOf"
-    expression = "attribute:ecs.availability-zone in [us-east-1]"
+    expression = "attribute:ecs.availability-zone in [us-east-2]"
   }
 }
 
@@ -161,6 +161,6 @@ resource "aws_ecs_service" "frankly_ecs_service" {
 
   placement_constraints {
     type       = "memberOf"
-    expression = "attribute:ecs.availability-zone in [us-east-1]"
+    expression = "attribute:ecs.availability-zone in [us-east-2]"
   }
 }
