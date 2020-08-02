@@ -44,7 +44,7 @@ module "ecs" {
 }
 
 module "ec2-profile" {
-  source = "../../modules/ecs-instance-profile"
+  source = "../../ecs-instance-profile"
   name   = local.name
 }
 
