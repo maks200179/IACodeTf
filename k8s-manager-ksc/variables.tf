@@ -8,8 +8,8 @@ variable "map_accounts" {
   type        = list(string)
 
   default = [
-    "411543714039",
-    "411543714039",
+    "user-id",
+    "user-id",
   ]
 }
 
@@ -23,7 +23,7 @@ variable "map_roles" {
 
   default = [
     {
-      rolearn  = "arn:aws:iam::411543714039:role/role1"
+      rolearn  = "arn:aws:iam::user-id:role/role1"
       username = "role1"
       groups   = ["system:masters"]
     },
@@ -40,12 +40,12 @@ variable "map_users" {
 
   default = [
     {
-      userarn  = "arn:aws:iam::411543714039:user/terra_user"
+      userarn  = "arn:aws:iam::12345:user/user_name"
       username = "user1"
       groups   = ["system:masters"]
     },
     {
-      userarn  = "arn:aws:iam::411543714039:user/terra_user"
+      userarn  = "arn:aws:iam::12345-id:user/user_name"
       username = "user2"
       groups   = ["system:masters"]
     },
