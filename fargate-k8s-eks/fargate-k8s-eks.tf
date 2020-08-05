@@ -1,6 +1,6 @@
 
 
-
+provider "aws" {}
 
 resource "aws_eks_fargate_profile" "example" {
   cluster_name           = aws_eks_cluster.example.name
