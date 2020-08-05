@@ -25,9 +25,7 @@ resource "aws_subnet" "example" {
   cidr_block        = cidrsubnet(aws_vpc.example.cidr_block, 8, count.index)
   vpc_id            = aws_vpc.example.id
 
-  tags = {
-    "kubernetes.io/cluster/${aws_eks_cluster.example.name}" = "shared"
-  }
+
 }
 
 
