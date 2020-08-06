@@ -14,23 +14,20 @@ resource "aws_vpc" "example" {
 
 
 
-data "aws_availability_zones" "available" {
-  state = "available"
-}
 
+
+
+
+// create a dedicated subnet
 resource "aws_subnet" "example" {
-  count = 2
-
-  availability_zone = data.aws_availability_zones.available.names[count.index]
-  cidr_block        = cidrsubnet(aws_vpc.example.cidr_block, 8, count.index)
-  vpc_id            = aws_vpc.example.id
+  vpc_id            = "${aws_vpc.example.id}"
+  cidr_block        = "10.0.1.0/24"
+  availability_zone = "us-east-2a"
+ 
   tags = {
-    "kubernetes.io/cluster/${aws_eks_cluster.example.name}" = "shared"
+    Name = "kubernetes_test-subnet"
   }
-
 }
-
-
 
 
 
