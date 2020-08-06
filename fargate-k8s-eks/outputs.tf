@@ -14,6 +14,6 @@ EOF
 
 resource "local_file" "environment1" {
     content = "${data.template_file.json_config.rendered}"
-    filename = "../terraform/modules_data/k8s-manager-ksc/json.secret"
+    filename = "../terraform/modules_data/fargate-k8s-eks/json.secret"
     file_permission = "0400"
 }  
