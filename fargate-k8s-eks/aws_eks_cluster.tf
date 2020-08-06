@@ -19,19 +19,19 @@ resource "aws_vpc" "example" {
 
 
 // create a dedicated subnet
-resource "aws_subnet" "example" {
-  vpc_id            = "${aws_vpc.example.id}"
+resource "aws_subnet" "example1" {
+  vpc_id            = "${aws_vpc.example1.id}"
   cidr_block        = "10.0.1.0/24"
   availability_zone = "us-east-2a"
  
   tags = {
-    Name = "kubernetes_test-subnet"
+    Name = "kubernetes_test-subnet1"
   }
 }
 
 // create a dedicated subnet
-resource "aws_subnet" "example1" {
-  vpc_id            = "${aws_vpc.example.id}"
+resource "aws_subnet" "example2" {
+  vpc_id            = "${aws_vpc.example2.id}"
   cidr_block        = "10.0.2.0/24"
   availability_zone = "us-east-2c"
  
