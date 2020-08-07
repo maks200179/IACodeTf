@@ -34,7 +34,11 @@ resource "aws_eks_fargate_profile" "example" {
   pod_execution_role_arn = aws_iam_role.prof-example.arn
   subnet_ids             = [aws_subnet.example1.id,aws_subnet.example2.id]
 
-  selector {
+    selector {
     namespace = "example"
+  }
+
+  selector {
+    namespace = "kube-system"
   }
 }
