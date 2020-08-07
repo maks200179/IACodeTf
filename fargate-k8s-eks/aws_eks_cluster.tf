@@ -145,7 +145,7 @@ resource "aws_eks_node_group" "example" {
   node_group_name = "example"
   node_role_arn   = aws_iam_role.node-example.arn
   subnet_ids      = [aws_subnet.example1.id,aws_subnet.example2.id]
-  instance_types  = "t2.nano"
+  instance_type = "t2.nano"
   scaling_config {
     desired_size = 1
     max_size     = 1
