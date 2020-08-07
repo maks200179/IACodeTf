@@ -114,7 +114,7 @@ resource "aws_iam_role" "node-example" {
       Action = "sts:AssumeRole"
       Effect = "Allow"
       Principal = {
-        Service = "ec2.amazonaws.com"
+        Service = "eks-fargate-pods.amazonaws.com"
       }
     }]
     Version = "2012-10-17"
