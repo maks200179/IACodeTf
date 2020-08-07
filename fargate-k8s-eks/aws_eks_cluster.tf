@@ -123,17 +123,17 @@ resource "aws_iam_role" "node-example" {
 
 resource "aws_iam_role_policy_attachment" "node-example-AmazonEKSWorkerNodePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-  role       = aws_iam_role.example.name
+  role       = aws_iam_role.node-example.name
 }
 
 resource "aws_iam_role_policy_attachment" "node-example-AmazonEKS_CNI_Policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-  role       = aws_iam_role.example.name
+  role       = aws_iam_role.node-example.name
 }
 
 resource "aws_iam_role_policy_attachment" "node-example-AmazonEC2ContainerRegistryReadOnly" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-  role       = aws_iam_role.example.name
+  role       = aws_iam_role.node-example.name
 }
 
 
