@@ -5,7 +5,7 @@ provider "aws" {}
 
 
 
-resource "aws_iam_role" "example" {
+resource "aws_iam_role" "prof-example" {
   name = "eks-fargate-profile-example"
 
   assume_role_policy = jsonencode({
@@ -20,9 +20,9 @@ resource "aws_iam_role" "example" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "example-AmazonEKSFargatePodExecutionRolePolicy" {
+resource "aws_iam_role_policy_attachment" "prof-example-AmazonEKSFargatePodExecutionRolePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy"
-  role       = aws_iam_role.example.name
+  role       = aws_iam_role.prof-example.name
 }
 
 
@@ -31,7 +31,7 @@ resource "aws_iam_role_policy_attachment" "example-AmazonEKSFargatePodExecutionR
 resource "aws_eks_fargate_profile" "example" {
   cluster_name           = aws_eks_cluster.example.name
   fargate_profile_name   = "example"
-  pod_execution_role_arn = aws_iam_role.example.arn
+  pod_execution_role_arn = aws_iam_role.prof-example.arn
   subnet_ids             = [aws_subnet.example1.id,aws_subnet.example2.id]
 
   selector {
