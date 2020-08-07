@@ -84,7 +84,7 @@ resource "aws_iam_role" "example" {
     {
       "Effect": "Allow",
       "Principal": {
-        "Service": "eks-fargate-pods.amazonaws.com"
+        "Service": "eks.amazonaws.com"
       },
       "Action": "sts:AssumeRole"
     }
