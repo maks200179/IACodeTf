@@ -88,22 +88,33 @@ provider "kubernetes" {
 ##//get vpc kubernetes_test id 
 data "aws_vpc" "kubernetes_test-vpc" {
   tags = {
-    Name = "kubernetes_test-vpc"
+    Name = "dev"
   }
 }
 
   
   
-##//get subnet id
-data "aws_subnet_ids" "kubernetes_test-subnet" {
+  
+  
+ 
+##//get subnets ids
+data "aws_subnet_ids" "kubernetes_public-subnet" {
   vpc_id = "${data.aws_vpc.kubernetes_test-vpc.id}"
   tags = {
-    Name = "kubernetes_test-subnet"
+    Name = "public"
   }
 }  
   
   
-  
+ 
+##//get subnets ids
+data "aws_subnet_ids" "kubernetes_private-subnet" {
+  vpc_id = "${data.aws_vpc.kubernetes_test-vpc.id}"
+  tags = {
+    Name = "private"
+  }
+}  
+    
   
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
