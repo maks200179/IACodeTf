@@ -1,34 +1,3 @@
-
-provider "aws" {}
-
-
-locals {
-  key_name = "kubernetes_test_ssh_acess_key"
-}
-
-
-resource "tls_private_key" "kubernetes_test_key" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-
-resource "aws_key_pair" "generated_key" {
-  key_name   = local.key_name
-  public_key = "${tls_private_key.kubernetes_test_key.public_key_openssh}"
-}
-
-
-
-resource "local_file" "kubernetes_test_key_pem" {
-    content     = tls_private_key.kubernetes_test_key.private_key_pem
-    filename = "../terraform/modules_data/aws_kubernetes_test_network_terraform_conf/kubernetes_test_ssh_key.pem"
-    file_permission = "0400"
-}
-
-
-
-
-// create the virtual private network
 resource "aws_vpc" "kubernetes_test-vpc" {
   cidr_block = "10.0.0.0/16"
   enable_dns_hostnames = true
@@ -83,24 +52,3 @@ resource "aws_route_table_association" "subnet-association" {
   subnet_id      = "${aws_subnet.kubernetes_test-subnet.id}"
   route_table_id = "${aws_route_table.kubernetes_test-route.id}"
 }
-
-
-#module data
-data "template_file" "json_config" {
-    
-    template = <<EOF
-{
-    "stage"             : "kubernetes_test",
-    "module_name"       : "aws_kubernetes_test_network_terraform_conf",
-    "network_module"    : "True"
-}
-EOF
-}
-
-resource "local_file" "module_info" {
-    
-    content = "${data.template_file.json_config.rendered}"
-    filename = "../terraform/modules_data/aws_kubernetes_test_network_terraform_conf/json.info"
-    file_permission = "0400"
-}  
-

@@ -2,7 +2,7 @@ provider "aws" {}
 
 locals {
   my_ip        = ["213.57.87.195/32","35.158.209.228/32","35.158.99.12/32"]
-  subnet_cidr  = ["10.0.0.0/8"]
+  subnet_cidr  = ["10.1.0.0/16"]
 }
 
 
@@ -40,7 +40,7 @@ resource "aws_security_group" "kubernetes_test-kubernetes_manager-sg-ssh" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = local.my_ip
+    cidr_blocks = ["0.0.0.0/0"]
   }
   
  
