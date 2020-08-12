@@ -87,7 +87,7 @@ resource "aws_security_group" "infrastracture-kubernetes_manager-sg-ssh-local" {
 // create  CentOS linux instances
 resource "aws_instance" "i-centos-linux-kubernetes_manager_infrastracture" {
   ami                         = "ami-0f2b4fc905b0bd1f1"
-  instance_type               = "t2.medium"
+  instance_type               = "t2.micro"
   key_name                    = "infrastracture_ssh_acess_key"
   vpc_security_group_ids      = [
                                  "${aws_security_group.infrastracture-kubernetes_manager-sg-ssh.id}",

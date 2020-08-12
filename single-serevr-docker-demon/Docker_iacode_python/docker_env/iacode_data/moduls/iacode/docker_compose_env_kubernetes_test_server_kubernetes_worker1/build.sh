@@ -83,9 +83,20 @@ EOF
     if  [[ $install_kube == "yes" ]] ; then
         if  [[ ! -z $(yum list installed | grep docker-ce.x86_64) ]] && [[ ! -z $(docker-compose --version) ]] ; then
             #add kubernetes repo
-            
+            cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+EOF
+        
+            sudo yum install -y kubelet kubeadm kubectl >/dev/null 2>&1
+            sudo systemctl enable kubelet               >/dev/null 2>&1
+            sudo systemctl start kubelet                >/dev/null 2>&1
             sudo yum install -y tcpdump                 >/dev/null 2>&1
-            sudo /var/single-serevr-docker-demon/build.sh
                 
                 
         fi
@@ -100,7 +111,7 @@ EOF
     if  [[ $set_host_name_master == "yes" ]] ; then
         if  [[ ! -z $(yum list installed | grep docker-ce.x86_64) ]] && [[ ! -z $(docker-compose --version) ]] ; then
         
-                sudo hostnamectl set-hostname infrastracture-node-cli                               
+                sudo hostnamectl set-hostname master-node                               
                 ipaddr=$(sudo curl --fail --silent --show-error http://169.254.169.254/latest/meta-data/local-ipv4) 
                 echo "${ipaddr}" "master-node" >> /etc/hosts                            
             
@@ -119,7 +130,7 @@ EOF
     if  [[ $get_token == "yes" ]] ; then
         if  [[ ! -z $(yum list installed | grep docker-ce.x86_64) ]] && [[ ! -z $(docker-compose --version) ]] ; then
         
-                echo "no token" >/dev/null 2>&1
+                sudo kubeadm token create --print-join-command | grep 'kubeadm join'
                 
         fi
         
@@ -154,7 +165,7 @@ EOF
             sudo hostnamectl set-hostname worker-node                                   
             ipaddres=$(sudo curl --fail --silent --show-error http://169.254.169.254/latest/meta-data/local-ipv4)     
             echo "${ipaddres}" "worker-node" >> /etc/hosts                                  
-            sudo mkdir /mnt/data{0..10}
+            
             sudo kubeadm join "${ipaddr}" --token "${manager_token}"  --discovery-token-ca-cert-hash  "${discovery_token}"                   
                 
         fi
@@ -168,7 +179,7 @@ EOF
             #sudo docker swarm init  | grep 'docker swarm join --token'
             
 
-            sudo kubeadm init --service-cidr=10.10.0.0/24  --pod-network-cidr=10.244.0.0/16  | grep "Your Kubernetes control-plane has initialized"  
+            sudo kubeadm init --service-cidr=10.10.0.0/24  --pod-network-cidr=10.244.0.0/16  | grep "Your Kubernetes control-plane has initialized" | sed 's/\x1b\[[0-9;]*m//g' 
             
              
             #for root
@@ -179,7 +190,7 @@ EOF
             #sudo bash -c "KUBECONFIG='$HOME/.kube/config'"
             #export KUBECONFIG=$HOME/.kube/config                                            3>&1 1>/dev/null 2>&3
             
-            sudo mkdir /mnt/data{0..10}
+            sudo mkdir /mnt/data{0..5}
             
             
             #for root 
@@ -205,4 +216,25 @@ EOF
     fi
     
     
-    
+    if [[ $rebuild_swarm_manager == "yes" ]] ; then
+        if  [[ ! -z $(yum list installed | grep docker-ce.x86_64) ]] && [[ ! -z $(docker-compose --version) ]] ; then
+        #base image build and push
+        #sudo docker-compose -f "${DIR}"/docker-compose_base_images.yml build 3>&1 1>/dev/null 2>&3
+        #sudo docker-compose -f "${DIR}"/docker-compose_base_images.yml push 3>&1 1>/dev/null 2>&3
+        
+        #build all other images
+        #sudo docker-compose -f "${DIR}"/docker-compose.full.yml build 3>&1 1>/dev/null 2>&3
+        #sudo docker-compose -f "${DIR}"/docker-compose.full.yml push 3>&1 1>/dev/null 2>&3
+        
+        sudo mkdir -p /mysql_data
+        sudo mkdir -p /mysql_conf/dbbackup
+        sudo mkdir -p /mysql_conf/log
+        
+        #deploy stack 
+        #sudo docker stack deploy --prune --resolve-image always --with-registry-auth  --compose-file "${DIR}"/docker-compose.yml stackdemo 
+        
+        #restore database 
+        #sudo  bash "${DIR}"/db_mysql5.6/conf/crone_copy_last_db_backup_from_s3.sh 2>/dev/null 
+        
+        fi
+    fi

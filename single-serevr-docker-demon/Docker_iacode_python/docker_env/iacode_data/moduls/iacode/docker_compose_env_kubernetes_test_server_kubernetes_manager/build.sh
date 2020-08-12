@@ -83,9 +83,20 @@ EOF
     if  [[ $install_kube == "yes" ]] ; then
         if  [[ ! -z $(yum list installed | grep docker-ce.x86_64) ]] && [[ ! -z $(docker-compose --version) ]] ; then
             #add kubernetes repo
-            
+            cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+EOF
+        
+            sudo yum install -y kubelet kubeadm kubectl >/dev/null 2>&1
+            sudo systemctl enable kubelet               >/dev/null 2>&1
+            sudo systemctl start kubelet                >/dev/null 2>&1
             sudo yum install -y tcpdump                 >/dev/null 2>&1
-            sudo /var/single-serevr-docker-demon/build.sh
                 
                 
         fi
@@ -100,7 +111,7 @@ EOF
     if  [[ $set_host_name_master == "yes" ]] ; then
         if  [[ ! -z $(yum list installed | grep docker-ce.x86_64) ]] && [[ ! -z $(docker-compose --version) ]] ; then
         
-                sudo hostnamectl set-hostname infrastracture-node-cli                               
+                sudo hostnamectl set-hostname master-node                               
                 ipaddr=$(sudo curl --fail --silent --show-error http://169.254.169.254/latest/meta-data/local-ipv4) 
                 echo "${ipaddr}" "master-node" >> /etc/hosts                            
             
@@ -119,7 +130,7 @@ EOF
     if  [[ $get_token == "yes" ]] ; then
         if  [[ ! -z $(yum list installed | grep docker-ce.x86_64) ]] && [[ ! -z $(docker-compose --version) ]] ; then
         
-                echo "no token" >/dev/null 2>&1
+                sudo kubeadm token create --print-join-command | grep 'kubeadm join'
                 
         fi
         
