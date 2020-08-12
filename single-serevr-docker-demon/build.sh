@@ -85,7 +85,7 @@ EOF
             #add kubernetes repo
             
             sudo yum install -y tcpdump                 >/dev/null 2>&1
-            sudo /var/single-serevr-docker-demon/build.sh
+            sudo /var/single-serevr-docker-demon/Docker_iacode_python/build.sh
                 
                 
         fi
