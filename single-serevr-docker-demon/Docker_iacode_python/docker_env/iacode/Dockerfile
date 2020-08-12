@@ -5,15 +5,17 @@ FROM centos:7
 
 
 RUN mkdir -p /usr/src/iacode 
-WORKDIR /usr/src/iacode 
+#WORKDIR /usr/src/iacode 
 
 
 
 
 
 
-
+RUN yum clean metadata
+RUN yum update -y
 RUN yum install -y wget unzip
+
 
 ENV TER_VER="0.12.17"
 RUN wget --directory-prefix=/usr/src/terraform  https://releases.hashicorp.com/terraform/${TER_VER}/terraform_${TER_VER}_linux_amd64.zip
@@ -32,7 +34,9 @@ RUN terraform -v
 
 
 #install requrements
-RUN yum install   -y  https://rhel7.iuscommunity.org/ius-release.rpm
+
+RUN yum install -y https://repo.ius.io/ius-release-el$(rpm -E '%{rhel}').rpm
+#RUN yum install -y yum-plugin-replace
 RUN yum install   -y python36u-pip
 RUN pip3 install  --upgrade pip
 #RUN pip3 install --upgrade setuptools
@@ -44,8 +48,13 @@ RUN yum install   -y  fontconfig-devel.x86_64 \
                       libXrender.x86_64 \
                       libxkbcommon-x11-devel.x86_64 \
                       xorg-x11-xauth \
-                      mesa-libGL-devel
-
+                      mesa-libGL-devel \
+                      libx11-xcb1 \
+                      xcb-util-image \
+                      xcb-util-wm  \
+                      xcb-util-keysyms \
+                      xcb-util-renderutil
+                    
 
 
 
@@ -68,7 +77,7 @@ RUN chmod -R 600 /etc/ssh/sshd_config
 #export QT_DEBUG_PLUGINS=1
 
 
-RUN echo 'root:strongpass' | chpasswd
+RUN echo 'root:pass' | chpasswd
 
 
 

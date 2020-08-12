@@ -7,10 +7,10 @@ DIR=$(dirname "$(readlink -f "$0")")
 
 
 
-if  [[ ! -f /iacode_data/MainWindowsIac.py ]] || [[ ! -d  /iacode_data ]] ; then
+if  [[ ! -f "${DIR}"/docker_env/iacode_data/MainWindowsIac.py ]] || [[ ! -d  "${DIR}"/docker_env/iacode_data ]] ; then
     #echo 'not'
-    mkdir /iacode_data
-    cp -fr "${DIR}"/app/* /iacode_data/
+    mkdir "${DIR}"/docker_env/iacode_data
+    cp -fr "${DIR}"/app/* "${DIR}"/docker_env/iacode_data/
     
 		
 else 
@@ -19,7 +19,7 @@ else
 fi
 
 	
-git_dir="/iacode_data/.git"
+git_dir="${DIR}/docker_env/iacode_data/.git"
 if [[ -d ${git_dir} ]]; then 
     rm -fr "${git_dir}"
     echo "git dir removed"

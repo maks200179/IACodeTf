@@ -8,7 +8,8 @@ services:
             dockerfile: Dockerfile
         volumes:
             - /tmp/.X11-unix:/tmp/.X11-unix 
-            - /iacode_data:/usr/src/iacode
+            - ./iacode_data:/usr/src/iacode
+            - ./terraform_data:/usr/src/iacode/terraform/.terraform
             
 
         ports:
@@ -19,6 +20,31 @@ services:
         privileged: true
         environment:
             - DISPLAY=localhost:1.0
+            
+            
+    kubectl:
+        container_name: kubectl
+        #image: alpine/k8s:1.16.8
+        build:
+            context: ./k8s/
+            dockerfile: Dockerfile
+        ports:
+            - "443:443"
+        networks:
+            - iacode
+        
+    awscli:
+        container_name: awscli
+        #image: amazon/aws-cli:latest
+        build:
+            context: ./awscli/
+            dockerfile: Dockerfile
+        #ports:
+        #    - "443:443"
+        networks:
+            - iacode    
+        
+        
             
             
 networks:
