@@ -35,7 +35,13 @@ resource "aws_security_group" "infrastracture-kubernetes_manager-sg-ssh" {
   description = "Allow SSH inbound traffic"
   vpc_id      = "${data.aws_vpc.infrastracture-vpc.id}"
  
- 
+  ingress {
+    from_port   = 72
+    to_port     = 72
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  
   ingress {
     from_port   = 22
     to_port     = 22
