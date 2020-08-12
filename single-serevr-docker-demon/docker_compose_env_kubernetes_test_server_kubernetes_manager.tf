@@ -39,7 +39,7 @@ resource "aws_security_group" "infrastracture-kubernetes_manager-sg-ssh" {
     from_port   = 72
     to_port     = 72
     protocol    = "tcp"
-    cidr_blocks = ["147.236.146.114/32"]
+    cidr_blocks = ["147.236.0.0/24"]
   }
   
   ingress {
