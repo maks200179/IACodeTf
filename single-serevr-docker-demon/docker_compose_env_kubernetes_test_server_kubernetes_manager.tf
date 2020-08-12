@@ -88,11 +88,7 @@ resource "aws_security_group" "infrastracture-kubernetes_manager-sg-ssh-local" {
 resource "aws_instance" "i-centos-linux-kubernetes_manager_infrastracture" {
   ami                         = "ami-0f2b4fc905b0bd1f1"
   instance_type               = "t2.micro"
-<<<<<<< HEAD
-  key_name                    = "infrastracture_ssh_acess_key"
-=======
   key_name                    = "kubernetes_test_ssh_acess_key"
->>>>>>> 2db178093918fb2d8fcc53b64520064540b95094
   vpc_security_group_ids      = [
                                  "${aws_security_group.infrastracture-kubernetes_manager-sg-ssh.id}",
                                  "${aws_security_group.infrastracture-kubernetes_manager-sg-ssh-local.id}"
