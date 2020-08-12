@@ -9,7 +9,7 @@ locals {
 //get vpc infrastracture id 
 data "aws_vpc" "infrastracture-vpc" {
   tags = {
-    Name = "infrastracture-vpc"
+    Name = "kubernetes_test-vpc"
   }
 }
 
@@ -19,7 +19,7 @@ data "aws_vpc" "infrastracture-vpc" {
 data "aws_subnet_ids" "infrastracture-subnet" {
   vpc_id = "${data.aws_vpc.infrastracture-vpc.id}"
   tags = {
-    Name = "infrastracture-subnet"
+    Name = "kubernetes_test-subnet"
   }
 }
 
