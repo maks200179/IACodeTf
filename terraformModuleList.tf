@@ -1,6 +1,3 @@
-
-  
-  
 module "aws_kubernetes_test_network_terraform_conf" {
   source = "../moduls/iacode/aws_kubernetes_test_network_terraform_conf"
 } 
