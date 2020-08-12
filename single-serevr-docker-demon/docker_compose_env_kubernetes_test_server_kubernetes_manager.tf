@@ -132,7 +132,7 @@ EOF
 resource "local_file" "environment1" {
     count    = "1"
     content = "${data.template_file.json_config.*.rendered[count.index]}"
-    filename = "../terraform/modules_data/docker_compose_env_infrastracture_server_kubernetes_manager/json.info"
+    filename = "../terraform/modules_data/single-serevr-docker-demon/json.info"
     file_permission = "0400"
 }  
   
