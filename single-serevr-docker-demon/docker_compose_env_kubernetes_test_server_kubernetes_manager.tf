@@ -9,7 +9,7 @@ locals {
 //get vpc infrastracture id 
 data "aws_vpc" "infrastracture-vpc" {
   tags = {
-    Name = "infrastracture-vpc"
+    Name = "kubernetes_test-vpc"
   }
 }
 
@@ -19,7 +19,7 @@ data "aws_vpc" "infrastracture-vpc" {
 data "aws_subnet_ids" "infrastracture-subnet" {
   vpc_id = "${data.aws_vpc.infrastracture-vpc.id}"
   tags = {
-    Name = "infrastracture-subnet"
+    Name = "kubernetes_test-subnet"
   }
 }
 
@@ -88,7 +88,11 @@ resource "aws_security_group" "infrastracture-kubernetes_manager-sg-ssh-local" {
 resource "aws_instance" "i-centos-linux-kubernetes_manager_infrastracture" {
   ami                         = "ami-0f2b4fc905b0bd1f1"
   instance_type               = "t2.micro"
+<<<<<<< HEAD
   key_name                    = "infrastracture_ssh_acess_key"
+=======
+  key_name                    = "kubernetes_test_ssh_acess_key"
+>>>>>>> 2db178093918fb2d8fcc53b64520064540b95094
   vpc_security_group_ids      = [
                                  "${aws_security_group.infrastracture-kubernetes_manager-sg-ssh.id}",
                                  "${aws_security_group.infrastracture-kubernetes_manager-sg-ssh-local.id}"
@@ -132,7 +136,7 @@ EOF
 resource "local_file" "environment1" {
     count    = "1"
     content = "${data.template_file.json_config.*.rendered[count.index]}"
-    filename = "../terraform/modules_data/docker_compose_env_infrastracture_server_kubernetes_manager/json.info"
+    filename = "../terraform/modules_data/single-serevr-docker-demon/json.info"
     file_permission = "0400"
 }  
   
