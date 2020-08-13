@@ -85,7 +85,13 @@ EOF
             #add kubernetes repo
             
             sudo yum install -y tcpdump                 >/dev/null 2>&1
-            sudo bash /var/single-serevr-docker-demon/Docker_iacode_python/build.sh
+            sudo mv /var/single-serevr-docker-demon/Docker_iacode_python /var/
+            sudo bash /var/Docker_iacode_python/build.sh
+            sudo docker exec -it awscli  aws eks --region us-east-2  update-kubeconfig --name test-eks-9chRfdVG
+            sudo docker cp  awscli:/root/.kube/config /
+            sudo docker cp  /config  kubectl:/root/.kube/config
+            sudo docker exec -it kubectl kubectl get pods -A
+            
                 
                 
         fi
