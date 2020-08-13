@@ -138,14 +138,7 @@ EOF
         if  [[ ! -z $(yum list installed | grep docker-ce.x86_64) ]] && [[ ! -z $(docker-compose --version) ]] ; then
                  #sudo whoami
                  #whoami
-                 su root
-                 export KUBECONFIG="$HOME/.kube/config"
-                 echo $KUBECONFIG
-                 ls -lsa $HOME/
-                 sudo su - root -c
-                 #echo $HOME
-                 #sudo -s
-                 sudo kubectl cluster-info  | egrep --color  'Kubernetes master' 3>&1 1>/dev/null 2>&3 | sed 's/\x1b\[[0-9;]*m//g' 
+                 echo 'check_cluster_up_no_in_use'
                 
         fi
         
