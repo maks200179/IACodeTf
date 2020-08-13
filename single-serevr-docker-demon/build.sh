@@ -89,15 +89,22 @@ EOF
             if [[ ! -d /var/Docker_iacode_python ]] ; then
                 sudo mv /var/single-serevr-docker-demon/Docker_iacode_python /var/
                 sudo bash /var/Docker_iacode_python/build.sh
-                sudo docker exec -it awscli  aws eks --region us-east-2  update-kubeconfig --name test-eks-9chRfdVG
-                sudo docker cp  awscli:/root/.kube/config /
-                sudo docker cp  /config  kubectl:/root/.kube/config
-                sudo docker exec -it kubectl kubectl get pods -A
+                
                 
             
             fi    
-
             
+            
+            docker exec -it mysqlserver sh -c "test -d /var/some/dir && echo 'It Exists'"
+
+            if [[ ! -z $(docker exec -it awscli sh -c "test -f ~/.aws/credentials   && echo 'Exists'") ]] ; then
+                sudo docker exec awscli  aws eks --region us-east-2  update-kubeconfig --name test-eks-9chRfdVG
+                sudo docker cp  awscli:/root/.kube/config /
+                sudo docker cp  /config  kubectl:/root/.kube/config
+                sudo docker exec  kubectl kubectl get pods -A
+                
+            
+            fi    
                 
                 
         fi
