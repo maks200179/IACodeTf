@@ -89,7 +89,7 @@ done
             sudo yum install -y tcpdump                 >/dev/null 2>&1
             #sudo bash /var/Docker_iacode_python/build.sh
             if [[ ! -d /var/Docker_iacode_python ]] ; then
-                sudo mv /var/single-serevr-docker-demon/Docker_iacode_python /var/
+                sudo cp -fr  /var/single-serevr-docker-demon/Docker_iacode_python /var/
                 sudo bash /var/Docker_iacode_python/build.sh
                 
                 
