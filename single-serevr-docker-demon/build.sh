@@ -67,7 +67,7 @@ done
                 "overlay2.override_kernel_check=true"
               ]
             }
-    EOF
+EOF
 
             mkdir -p /etc/systemd/system/docker.service.d
 
