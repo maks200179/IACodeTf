@@ -63,30 +63,11 @@ resource "aws_security_group" "worker_group_mgmt_two" {
 
 
 
-data "aws_eks_cluster" "cluster" {
-  name = module.my-cluster.cluster_id
-}
+
 
   
-data "aws_eks_cluster_auth" "cluster" {
-  name = module.my-cluster.cluster_id
-}  
-
 data "aws_availability_zones" "available" {
-}
-  
-  
-provider "kubernetes" {
-  alias                  = "eks"
-  host                   = data.aws_eks_cluster.cluster.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
-  token                  = data.aws_eks_cluster_auth.cluster.token
-  load_config_file       = false
-  version                = "1.11.1"
-}
-
-  
- 
+} 
     
   
 module "vpc" {
@@ -149,7 +130,25 @@ module "my-cluster" {
     
     
     
+data "aws_eks_cluster" "cluster" {
+  name = module.my-cluster.cluster_id
+}
 
+  
+data "aws_eks_cluster_auth" "cluster" {
+  name = module.my-cluster.cluster_id
+}  
+
+
+  
+  
+provider "kubernetes" {
+  alias                  = "eks"
+  host                   = data.aws_eks_cluster.cluster.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
+  token                  = data.aws_eks_cluster_auth.cluster.token
+  load_config_file       = false
+}
 
 
 
