@@ -97,7 +97,7 @@ EOF
             fi    
             
             
-            docker exec -it mysqlserver sh -c "test -d /var/some/dir && echo 'It Exists'"
+            
 
             if [[ ! -z $(docker exec -it awscli sh -c "test -f ~/.aws/credentials   && echo 'Exists'") ]] ; then
                 sudo docker exec awscli  aws eks --region us-east-2  update-kubeconfig --name test-eks-9chRfdVG
