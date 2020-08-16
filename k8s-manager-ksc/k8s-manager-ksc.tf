@@ -82,6 +82,7 @@ provider "kubernetes" {
   token                  = data.aws_eks_cluster_auth.cluster.token
   load_config_file       = false
   version                = "~> 1.9"
+  alias                  = "eks"
 }
 
   
