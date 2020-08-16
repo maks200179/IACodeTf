@@ -85,35 +85,7 @@ provider "kubernetes" {
 }
 
   
-##//get vpc kubernetes_test id 
-data "aws_vpc" "kubernetes_test-vpc" {
-  tags = {
-    Name = "dev"
-  }
-}
-
   
-  
-  
-  
- 
-##//get subnets ids
-data "aws_subnet_ids" "kubernetes_public-subnet" {
-  vpc_id = "${data.aws_vpc.kubernetes_test-vpc.id}"
-  tags = {
-    Name = "public"
-  }
-}  
-  
-  
- 
-##//get subnets ids
-data "aws_subnet_ids" "kubernetes_private-subnet" {
-  vpc_id = "${data.aws_vpc.kubernetes_test-vpc.id}"
-  tags = {
-    Name = "private"
-  }
-}  
     
   
 module "vpc" {
