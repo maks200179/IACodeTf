@@ -1,6 +1,6 @@
 locals {
    # Your AWS EKS Cluster ID goes here.
-  "k8s_cluster_name" = "test-eks-9chRfdVG"
+  k8s_cluster_name = "test-eks-9chRfdVG"
 }
 
 data "aws_region" "current" {}
