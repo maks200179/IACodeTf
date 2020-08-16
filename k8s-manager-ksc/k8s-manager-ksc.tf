@@ -76,6 +76,8 @@ data "aws_availability_zones" "available" {
 }
   
   
+  
+  
 provider "kubernetes" {
   host                   = data.aws_eks_cluster.cluster.endpoint
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
@@ -86,21 +88,7 @@ provider "kubernetes" {
 }
 
   
-module "alb_ingress_controller" {
-  source  = "iplabs/alb-ingress-controller/kubernetes"
-  version = "3.4.0"
 
-  providers = {
-    kubernetes = "kubernetes.eks"
-  }
-
-  k8s_cluster_type = "eks"
-  k8s_namespace    = "kube-system"
-
-  aws_region_name  = var.region
-  k8s_cluster_name = data.aws_eks_cluster.cluster.name
-}  
-    
   
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
@@ -125,7 +113,23 @@ module "vpc" {
     "kubernetes.io/role/internal-elb"             = "1"
   }
 }
-  
+
+module "alb_ingress_controller" {
+  source  = "iplabs/alb-ingress-controller/kubernetes"
+  version = "3.4.0"
+
+  providers = {
+    kubernetes = "kubernetes.eks"
+  }
+
+  k8s_cluster_type = "eks"
+  k8s_namespace    = "kube-system"
+
+  aws_region_name  = var.region
+  k8s_cluster_name = data.aws_eks_cluster.cluster.name
+}  
+      
+
 module "eks" {
   source                        = "terraform-aws-modules/eks/aws"
   version                       = "12.0.0"
