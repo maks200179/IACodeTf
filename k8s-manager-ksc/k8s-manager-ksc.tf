@@ -63,11 +63,57 @@ resource "aws_security_group" "worker_group_mgmt_two" {
 
 
 
-
+data "aws_eks_cluster" "cluster" {
+  name = module.my-cluster.cluster_id
+}
 
   
+data "aws_eks_cluster_auth" "cluster" {
+  name = module.my-cluster.cluster_id
+}  
+
 data "aws_availability_zones" "available" {
-} 
+}
+  
+  
+provider "kubernetes" {
+  host                   = data.aws_eks_cluster.cluster.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
+  token                  = data.aws_eks_cluster_auth.cluster.token
+  load_config_file       = false
+  version                = "~> 1.9"
+}
+
+  
+##//get vpc kubernetes_test id 
+data "aws_vpc" "kubernetes_test-vpc" {
+  tags = {
+    Name = "dev"
+  }
+}
+
+  
+  
+  
+  
+ 
+##//get subnets ids
+data "aws_subnet_ids" "kubernetes_public-subnet" {
+  vpc_id = "${data.aws_vpc.kubernetes_test-vpc.id}"
+  tags = {
+    Name = "public"
+  }
+}  
+  
+  
+ 
+##//get subnets ids
+data "aws_subnet_ids" "kubernetes_private-subnet" {
+  vpc_id = "${data.aws_vpc.kubernetes_test-vpc.id}"
+  tags = {
+    Name = "private"
+  }
+}  
     
   
 module "vpc" {
@@ -125,16 +171,3 @@ module "my-cluster" {
   map_users                            = var.map_users
   map_accounts                         = var.map_accounts
 }
-    
-    
-    
-    
-    
-
-
-
-
-
-
-
-
