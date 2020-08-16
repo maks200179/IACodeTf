@@ -3,9 +3,9 @@ data "template_file" "json_config" {
     
     template = <<EOF
 {
-    "endpoint": "${module.my-cluster.cluster_endpoint}",
-    "securitygroup": "${module.my-cluster.cluster_security_group_id}",
-    "kubectl_config": "${module.my-cluster.kubeconfig}"
+    "endpoint": "${module.eks.cluster_endpoint}",
+    "securitygroup": "${module.eks.cluster_security_group_id}",
+    "kubectl_config": "${module.eks.kubeconfig}"
     
 
 }
