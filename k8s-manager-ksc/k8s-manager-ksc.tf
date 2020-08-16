@@ -64,12 +64,12 @@ resource "aws_security_group" "worker_group_mgmt_two" {
 
 
 data "aws_eks_cluster" "cluster" {
-  name = module.my-cluster.cluster_id
+  name = module.eks.cluster_id
 }
 
   
 data "aws_eks_cluster_auth" "cluster" {
-  name = module.my-cluster.cluster_id
+  name = module.eks.cluster_id
 }  
 
 data "aws_availability_zones" "available" {
@@ -118,7 +118,7 @@ module "eks" {
   version                       = "12.0.0"
   cluster_name                  = local.cluster_name
   subnets                       = module.vpc.public_subnets
-  vpc_id                         = module.vpc.vpc_id
+  vpc_id                        = module.vpc.vpc_id
   worker_groups_launch_template = [
     {
       name                          = "worker-group-1"
