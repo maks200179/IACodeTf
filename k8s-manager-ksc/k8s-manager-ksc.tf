@@ -159,7 +159,7 @@ module "eks" {
   k8s_namespace    = "kube-system"
 
   aws_region_name  = var.region
-  k8s_cluster_name = data.aws_eks_cluster.target.name
+  k8s_cluster_name = data.aws_eks_cluster.cluster.name
 }
   
   
