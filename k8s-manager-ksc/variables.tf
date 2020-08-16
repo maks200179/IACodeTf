@@ -1,15 +1,14 @@
 variable "region" {
-  default = "us-east-2"
-  }
-
+  default = "us-west-2"
+}
 
 variable "map_accounts" {
   description = "Additional AWS account numbers to add to the aws-auth configmap."
   type        = list(string)
 
   default = [
-    "user-id",
-    "user-id",
+    "411543714039",
+    "411543714039",
   ]
 }
 
@@ -23,8 +22,8 @@ variable "map_roles" {
 
   default = [
     {
-      rolearn  = "arn:aws:iam::user-id:role/role1"
-      username = "role1"
+      rolearn  = "arn:aws:iam::411543714039:role/role1"
+      username = "terra_user"
       groups   = ["system:masters"]
     },
   ]
@@ -40,13 +39,13 @@ variable "map_users" {
 
   default = [
     {
-      userarn  = "arn:aws:iam::12345:user/user_name"
-      username = "user1"
+      userarn  = "arn:aws:iam::411543714039:user/terra_user"
+      username = "terra_user"
       groups   = ["system:masters"]
     },
     {
-      userarn  = "arn:aws:iam::12345-id:user/user_name"
-      username = "user2"
+      userarn  = "arn:aws:iam::411543714039:user/terra_user"
+      username = "terra_user"
       groups   = ["system:masters"]
     },
   ]
