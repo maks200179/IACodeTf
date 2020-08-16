@@ -86,7 +86,20 @@ provider "kubernetes" {
 }
 
   
-  
+module "alb_ingress_controller" {
+  source  = "iplabs/alb-ingress-controller/kubernetes"
+  version = "3.4.0"
+
+  providers = {
+    kubernetes = "kubernetes.eks"
+  }
+
+  k8s_cluster_type = "eks"
+  k8s_namespace    = "kube-system"
+
+  aws_region_name  = var.region
+  k8s_cluster_name = data.aws_eks_cluster.cluster.name
+}  
     
   
 module "vpc" {
@@ -147,20 +160,7 @@ module "eks" {
     
 
  
-  module "alb_ingress_controller" {
-  source  = "iplabs/alb-ingress-controller/kubernetes"
-  version = "3.4.0"
 
-  providers = {
-    kubernetes = "kubernetes.eks"
-  }
-
-  k8s_cluster_type = "eks"
-  k8s_namespace    = "kube-system"
-
-  aws_region_name  = var.region
-  k8s_cluster_name = data.aws_eks_cluster.cluster.name
-}
   
   
   
