@@ -96,14 +96,9 @@ provider "kubernetes" {
   host                   = data.aws_eks_cluster.cluster.endpoint
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
   token                  = data.aws_eks_cluster_auth.cluster.token
-  load_config_file       = false
+  load_config_file       = true
   version                = "~> 1.9"
   
-  exec {
-    api_version = "client.authentication.k8s.io/v1alpha1"
-    args        = ["token", "-i", aws_eks_cluster.eks.name, "-r", "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/MyRole"]
-    command     = "aws-iam-authenticator"
-  }
 }
 
   
