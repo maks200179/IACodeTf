@@ -30,12 +30,33 @@ module "alb" {
 
   target_groups = [
     {
-      name_prefix      = "pref-"
-      backend_protocol = "HTTP"
-      backend_port     = 80
-      target_type      = "instance"
-    }
+      name_prefix          = "h1"
+      backend_protocol     = "HTTP"
+      backend_port         = 80
+      target_type          = "instance"
+      deregistration_delay = 10
+      health_check = {
+        enabled             = true
+        interval            = 30
+        path                = "/healthz"
+        port                = "traffic-port"
+        healthy_threshold   = 3
+        unhealthy_threshold = 3
+        timeout             = 6
+        protocol            = "HTTP"
+        matcher             = "200-399"
+      }
+      tags = {
+        InstanceTargetGroupTag = "baz"
+      }
+    },
+    {
+      name_prefix                        = "l1-"
+      target_type                        = "lambda"
+      lambda_multi_value_headers_enabled = true
+    },
   ]
+    
 
   https_listeners = [
     {
