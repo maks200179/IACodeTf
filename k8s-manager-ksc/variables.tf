@@ -1,5 +1,5 @@
 variable "region" {
-  default = "us-esst-2"
+  default = "us-east-2"
 }
 
 variable "map_accounts" {
