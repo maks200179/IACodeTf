@@ -3,7 +3,7 @@ locals {
   k8s_cluster_name = "test-eks-9chRfdVG"
 }
 
-data "aws_region" "current" {}
+
 
 data "aws_eks_cluster" "target" {
   name = local.k8s_cluster_name
