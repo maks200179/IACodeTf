@@ -59,7 +59,7 @@ module "alb" {
     {
       port               = 443
       protocol           = "HTTPS"
-      certificate_arn    = "arn:aws:iam::411543714039:server-certificate/test_cert-123456789012"
+      certificate_arn    = module.acm.this_acm_certificate_arn
       target_group_index = 0
     }
   ]
