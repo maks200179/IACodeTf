@@ -1,3 +1,7 @@
+locals {
+  domain_name = "test.my.domain.com"
+}
+
 data "aws_route53_zone" "this" {
   name = local.domain_name
 }
