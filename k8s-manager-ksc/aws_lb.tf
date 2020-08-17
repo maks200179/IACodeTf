@@ -23,10 +23,7 @@ module "alb" {
   vpc_id             =  module.vpc.vpc_id
   subnets            =  module.vpc.public_subnets
   security_groups    = [module.security_group.this_security_group_id]
-  
-  access_logs = {
-    bucket = "my-alb-logs"
-  }
+
 
   target_groups = [
     {
