@@ -146,7 +146,7 @@ module "my-cluster" {
       additional_userdata           = "echo foo bar"
       asg_desired_capacity          = 2
       root_volume_size              = "10"
-      target_group_arns             = [module.alb.target_group_arns]
+      target_group_arns             = module.alb.target_group_arns
       additional_security_group_ids = [aws_security_group.worker_group_mgmt_one.id]
     },
     {
@@ -154,7 +154,7 @@ module "my-cluster" {
       instance_type                 = "t2.micro"
       additional_userdata           = "echo foo bar"
       root_volume_size              = "10"
-      target_group_arns             = [module.alb.target_group_arns]
+      target_group_arns             = module.alb.target_group_arns
       additional_security_group_ids = [aws_security_group.worker_group_mgmt_two.id]
       asg_desired_capacity          = 1
     },
