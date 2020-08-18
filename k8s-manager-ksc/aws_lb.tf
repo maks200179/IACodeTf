@@ -15,8 +15,8 @@ module "acm" {
 }
   
 resource "aws_autoscaling_attachment" "asg_attachment_elb" {
-  autoscaling_group_name = data.my-cluster.workers_asg_names.name
-  alb_target_group_arn = data.alb.target_group_arns.arn
+  autoscaling_group_name = data.my-cluster.workers_asg_names	
+  alb_target_group_arn = data.alb.target_group_arns
 }  
   
 
