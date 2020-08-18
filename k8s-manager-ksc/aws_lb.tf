@@ -48,10 +48,9 @@ module "alb" {
   
   target_groups = [
     {
-      name_prefix          = "h1"
-      backend_protocol     = "HTTP"
+      name_prefix          = "h1-"
+      backend_protocol     = "TCP"
       backend_port         = 80
-      port                 = 80
       target_type          = "instance"
       deregistration_delay = 10
       health_check = {
