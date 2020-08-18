@@ -1,10 +1,11 @@
 provider "aws" {
   region      =  var.region
-  domain_name = "test.my.domain.com"
+ 
 }
 
 locals {
   cluster_name = "test-eks-9chRfdVG"
+  domain_name  = "test.my.domain.com"
 }
 
 resource "random_string" "suffix" {
