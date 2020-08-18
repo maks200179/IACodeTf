@@ -72,7 +72,7 @@ module "alb" {
         matcher             = "200-399"
       }
       tags = {
-        InstanceTargetGroupTag = "baz"
+        InstanceTargetGroupTag = "node"
       }
     },
     {
