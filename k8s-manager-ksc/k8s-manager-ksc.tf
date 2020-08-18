@@ -136,20 +136,7 @@ module "my-cluster" {
   vpc_id                        = module.vpc.vpc_id
   
     
-  workers_group_defaults = {
-    additional_security_group_ids = ""          # A comma delimited list of additional security group ids to include in worker launch config
-    asg_desired_capacity          = "3"         # Desired worker capacity in the autoscaling group.
-    asg_max_size                  = "6"         # Maximum worker capacity in the autoscaling group.
-    asg_min_size                  = "3"         # Minimum worker capacity in the autoscaling group.
-    autoscaling_enabled           = true        # Sets whether policy and matching tags will be added to allow autoscaling.
-    enable_monitoring             = true        # Enables/disables detailed monitoring.
-    instance_type                 = "t3.medium" # Size of the workers instances.
-    protect_from_scale_in         = true        # Prevent AWS from scaling in, so that cluster-autoscaler is solely responsible.
-    public_ip                     = false       # Associate a public ip address with a worker
-    root_volume_size              = "100"       # root volume size of workers instances.
-    root_volume_type              = "gp2"       # root volume type of workers instances, can be 'standard', 'gp2', or 'io1'
-    target_group_arns             = ""          # A comma delimited list of ALB target group ARNs to be associated to the ASG
-  }  
+
 
 
   worker_groups = [
