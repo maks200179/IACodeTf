@@ -1,5 +1,6 @@
 provider "aws" {
-  region  = var.region
+  region      =  var.region
+  domain_name = "test.my.domain.com"
 }
 
 locals {
