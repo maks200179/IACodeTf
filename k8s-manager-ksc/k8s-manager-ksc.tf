@@ -5,7 +5,7 @@ provider "aws" {
 
 locals {
   cluster_name = "test-eks-9chRfdVG"
-  domain_name  = "test.my.domain.com"
+  domain_name  = "test1.my.domain.com"
 }
 
 resource "random_string" "suffix" {
