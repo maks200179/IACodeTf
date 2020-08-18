@@ -43,7 +43,7 @@ resource "aws_security_group" "worker_group_mgmt_one" {
       "10.0.0.0/8",
     ]
   }
-}  
+  
     
     
     
@@ -74,7 +74,7 @@ resource "aws_security_group" "worker_group_mgmt_two" {
       "192.168.0.0/16",
     ]
   }
-}  
+  
     
   ingress {
     from_port = 22
