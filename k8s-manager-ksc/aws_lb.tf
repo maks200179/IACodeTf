@@ -14,7 +14,10 @@ module "acm" {
   zone_id     = data.aws_route53_zone.this.id
 }
   
-  
+resource "aws_autoscaling_attachment" "asg_attachment_elb" {
+  autoscaling_group_name = data.my-cluster.workers_asg_names
+  alb_target_group_arn = data.alb.target_group_arns
+}  
   
 
 module "security_group" {
@@ -52,7 +55,7 @@ module "alb" {
       health_check = {
         enabled             = true
         interval            = 30
-        path                = "/healthz"
+        path                = "/"
         port                = "traffic-port"
         healthy_threshold   = 3
         unhealthy_threshold = 3
