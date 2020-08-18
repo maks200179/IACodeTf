@@ -44,14 +44,7 @@ module "alb" {
   security_groups    = [module.security_group.this_security_group_id]
 
 
-  target_groups = [
-    {
-      name_prefix      = "pref"
-      backend_protocol = "HTTP"
-      backend_port     = 80
-      target_type      = "instance"
-    }
-  ]
+
   
   target_groups = [
     {
