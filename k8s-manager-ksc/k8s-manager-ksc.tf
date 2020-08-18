@@ -129,11 +129,27 @@ module "vpc" {
   
   
 module "my-cluster" {
-  source          = "terraform-aws-modules/eks/aws"
-  cluster_name    = local.cluster_name
-  cluster_version = "1.16"
-  subnets         = module.vpc.public_subnets
-  vpc_id          = module.vpc.vpc_id
+  source                        = "terraform-aws-modules/eks/aws"
+  cluster_name                  = local.cluster_name
+  cluster_version               = "1.16"
+  subnets                       = module.vpc.public_subnets
+  vpc_id                        = module.vpc.vpc_id
+  
+    
+  workers_group_defaults = {
+    additional_security_group_ids = ""          # A comma delimited list of additional security group ids to include in worker launch config
+    asg_desired_capacity          = "3"         # Desired worker capacity in the autoscaling group.
+    asg_max_size                  = "6"         # Maximum worker capacity in the autoscaling group.
+    asg_min_size                  = "3"         # Minimum worker capacity in the autoscaling group.
+    autoscaling_enabled           = true        # Sets whether policy and matching tags will be added to allow autoscaling.
+    enable_monitoring             = true        # Enables/disables detailed monitoring.
+    instance_type                 = "t3.medium" # Size of the workers instances.
+    protect_from_scale_in         = true        # Prevent AWS from scaling in, so that cluster-autoscaler is solely responsible.
+    public_ip                     = false       # Associate a public ip address with a worker
+    root_volume_size              = "100"       # root volume size of workers instances.
+    root_volume_type              = "gp2"       # root volume type of workers instances, can be 'standard', 'gp2', or 'io1'
+    target_group_arns             = ""          # A comma delimited list of ALB target group ARNs to be associated to the ASG
+  }  
 
 
   worker_groups = [
@@ -142,12 +158,16 @@ module "my-cluster" {
       instance_type                 = "t2.micro"
       additional_userdata           = "echo foo bar"
       asg_desired_capacity          = 2
+      root_volume_size              = "10"
+      target_group_arns             = [module.security_group.this_security_group_id]
       additional_security_group_ids = [aws_security_group.worker_group_mgmt_one.id]
     },
     {
       name                          = "worker-group-2"
       instance_type                 = "t2.micro"
       additional_userdata           = "echo foo bar"
+      root_volume_size              = "10"
+      target_group_arns             = [module.security_group.this_security_group_id]
       additional_security_group_ids = [aws_security_group.worker_group_mgmt_two.id]
       asg_desired_capacity          = 1
     },
