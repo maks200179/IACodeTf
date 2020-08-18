@@ -51,6 +51,7 @@ module "alb" {
       name_prefix          = "h1"
       backend_protocol     = "HTTP"
       backend_port         = 80
+      port                 = 80
       target_type          = "instance"
       deregistration_delay = 10
       health_check = {
