@@ -162,5 +162,87 @@ module "my-cluster" {
 
 
   
+  locals {
+  domain_name = "test.my.domain.com"
+}
+
+data "aws_route53_zone" "this" {
+  name = local.domain_name
+}
+
+module "acm" {
+  source  = "terraform-aws-modules/acm/aws"
+  version = "~> v2.0"
+
+  domain_name = local.domain_name # trimsuffix(data.aws_route53_zone.this.name, ".") # Terraform >= 0.12.17
+  zone_id     = data.aws_route53_zone.this.id
+}
   
+resource "aws_autoscaling_attachment" "asg_attachment_elb" {
+  autoscaling_group_name = data.my-cluster.workers_asg_names	
+  alb_target_group_arn = data.alb.target_group_arns
+}  
+  
+
+module "security_group" {
+  source  = "terraform-aws-modules/security-group/aws"
+  version = "~> 3.0"
+
+  name        = "alb-sg-alb"
+  description = "Security group for example usage with ALB"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress_cidr_blocks = ["0.0.0.0/0"]
+  ingress_rules       = ["http-80-tcp", "all-icmp"]
+  egress_rules        = ["all-all"]
+}
+
+
+module "alb" {
+  source  = "terraform-aws-modules/alb/aws"
+  version = "~> 5.0"
+  
+  name = "my-alb"
+
+  load_balancer_type = "application"
+
+  vpc_id             =  module.vpc.vpc_id
+  subnets            =  module.vpc.public_subnets
+  security_groups    = [module.security_group.this_security_group_id]
+
+  target_groups = [
+    {
+      name_prefix      = "pref-"
+      backend_protocol = "HTTP"
+      backend_port     = 80
+      target_type      = "instance"
+
+    }
+  ]
+
+  
+
+    
+
+  https_listeners = [
+    {
+      port               = 443
+      protocol           = "HTTPS"
+      certificate_arn    = module.acm.this_acm_certificate_arn
+      target_group_index = 0
+    }
+  ]
+
+  http_tcp_listeners = [
+    {
+      port               = 80
+      protocol           = "HTTP"
+      target_group_index = 0
+    }
+  ]
+
+  tags = {
+    Environment = "Test"
+  }
+}
   
