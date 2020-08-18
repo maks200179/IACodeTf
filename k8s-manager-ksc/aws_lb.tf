@@ -43,38 +43,29 @@ module "alb" {
   subnets            =  module.vpc.public_subnets
   security_groups    = [module.security_group.this_security_group_id]
 
-
-
-  
   target_groups = [
     {
-      name_prefix          = "h1-"
-      backend_protocol     = "TCP"
-      backend_port         = 80
-      target_type          = "instance"
-      deregistration_delay = 10
+      name_prefix      = "pref-"
+      backend_protocol = "HTTP"
+      backend_port     = 80
+      target_type      = "instance"
       health_check = {
         enabled             = true
         interval            = 30
-        path                = "/"
-        port                = 80
+        path                = "/healthz"
+        port                = "traffic-port"
         healthy_threshold   = 3
         unhealthy_threshold = 3
         timeout             = 6
-        protocol            = "HTTP"
-        matcher             = "200-399"
       }
       tags = {
         InstanceTargetGroupTag = "node"
       }
-    },
-    {
-      name_prefix                        = "l1-"
-      target_type                        = "instance"
-      
-    },
-  ] 
-    
+    }
+  ]
+
+  
+
     
 
   https_listeners = [
