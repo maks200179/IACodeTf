@@ -169,5 +169,14 @@ module "my-cluster" {
 }
     
 
-
+### External cli kubergrunt
+data "external" "thumb" {
+  program = ["kubergrunt", "eks", "oidc-thumbprint", "--issuer-url", module.my-cluster.identity.0.oidc.0.issuer]
+}
+### OIDC config
+resource "aws_iam_openid_connect_provider" "cluster" {
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = [data.external.thumb.result.thumbprint]
+  url             = module.my-cluster.identity.0.oidc.0.issuer
+}
 
