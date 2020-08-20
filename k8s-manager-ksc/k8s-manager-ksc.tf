@@ -269,7 +269,7 @@ module "eks-node-group-a" {
 
   kubernetes_labels = {
     lifecycle = "OnDemand"
-    az        = data.aws_availability_zones.available.names[0]
+    az        = flatten([data.aws_availability_zones.available.names])
   }
 
   tags = {
