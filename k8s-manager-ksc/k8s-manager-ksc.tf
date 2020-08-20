@@ -79,12 +79,12 @@ resource "aws_security_group" "worker_group_mgmt_two" {
 
 
 data "aws_eks_cluster" "cluster" {
-  name = module.my-cluster.cluster_id
+  name = module.aws_eks_cluster.cluster_id
 }
 
   
 data "aws_eks_cluster_auth" "cluster" {
-  name = module.my-cluster.cluster_id
+  name = module.aws_eks_cluster.cluster_id
 }  
 
 data "aws_availability_zones" "available" {
@@ -130,44 +130,7 @@ module "vpc" {
 }
   
   
-module "my-cluster" {
-  source                        = "terraform-aws-modules/eks/aws"
-  cluster_name                  = local.cluster_name
-  cluster_version               = "1.16"
-  subnets                       = module.vpc.public_subnets
-  vpc_id                        = module.vpc.vpc_id
-  
-    
 
-
-
-  worker_groups = [
-    {
-      name                          = "worker-group-1"
-      instance_type                 = "t2.micro"
-      additional_userdata           = "echo foo bar"
-      asg_desired_capacity          = 2
-      root_volume_size              = "10"
-      target_group_arns             = module.alb.target_group_arns
-      additional_security_group_ids = [aws_security_group.worker_group_mgmt_one.id]
-    },
-    {
-      name                          = "worker-group-2"
-      instance_type                 = "t2.micro"
-      additional_userdata           = "echo foo bar"
-      root_volume_size              = "10"
-      target_group_arns             = module.alb.target_group_arns
-      additional_security_group_ids = [aws_security_group.worker_group_mgmt_two.id]
-      asg_desired_capacity          = 1
-    },
-  ]
-
-  worker_additional_security_group_ids = [aws_security_group.all_worker_mgmt.id]
-  map_roles                            = var.map_roles
-  map_users                            = var.map_users
-  map_accounts                         = var.map_accounts
-}
-    
 
 ### OIDC config
 resource "aws_iam_openid_connect_provider" "cluster" {
@@ -176,3 +139,123 @@ resource "aws_iam_openid_connect_provider" "cluster" {
   url             = data.aws_eks_cluster.cluster.identity.0.oidc.0.issuer
 }
 
+
+    
+    
+    
+#####
+# EKS Cluster
+#####
+
+resource "aws_eks_cluster" "cluster" {
+  enabled_cluster_log_types = []
+  name                      = "eks"
+  role_arn                  = aws_iam_role.cluster.arn
+  version                   = "1.16"
+
+  vpc_config {
+    subnet_ids              = flatten([module.vpc.public_subnets, module.vpc.private_subnets])
+    security_group_ids      = [aws_security_group.all_worker_mgmt.id]
+    endpoint_private_access = "true"
+    endpoint_public_access  = "true"
+  }
+}
+
+resource "aws_iam_role" "cluster" {
+  name = "eks-cluster-role"
+
+  assume_role_policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "eks.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+POLICY
+}
+
+resource "aws_iam_role_policy_attachment" "cluster_AmazonEKSClusterPolicy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+  role       = aws_iam_role.cluster.name
+}
+
+resource "aws_iam_role_policy_attachment" "cluster_AmazonEKSServicePolicy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
+  role       = aws_iam_role.cluster.name
+}
+
+#####
+# EKS Node Group per availability zone
+# If you are running a stateful application across multiple Availability Zones that is backed by Amazon EBS volumes and using the Kubernetes Cluster Autoscaler,
+# you should configure multiple node groups, each scoped to a single Availability Zone. In addition, you should enable the --balance-similar-node-groups feature.
+#
+# In this setup you can configure a single IAM Role that is attached to multiple node groups.
+#####
+
+resource "aws_iam_role" "main" {
+  name = "eks-managed-group-node-role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Effect": "Allow"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "main_AmazonEKSWorkerNodePolicy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+  role       = aws_iam_role.main.name
+}
+
+resource "aws_iam_role_policy_attachment" "main_AmazonEKS_CNI_Policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+  role       = aws_iam_role.main.name
+}
+
+resource "aws_iam_role_policy_attachment" "main_AmazonEC2ContainerRegistryReadOnly" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+  role       = aws_iam_role.main.name
+}
+
+module "eks-node-group-a" {
+  source = "../../"
+
+  enabled         = true
+  create_iam_role = false
+
+  cluster_name  = aws_eks_cluster.cluster.id
+  node_role_arn = aws_iam_role.main.arn
+  subnet_ids    = [module.vpc.public_subnets]
+
+  desired_size = 2
+  min_size     = 2
+  max_size     = 2
+
+  instance_types = ["t2.micro"]
+
+  ec2_ssh_key = "eks-test"
+
+  kubernetes_labels = {
+    lifecycle = "OnDemand"
+    az        = data.aws_availability_zones.available.names
+  }
+
+  tags = {
+    Environment = "test"
+  }
+}    
