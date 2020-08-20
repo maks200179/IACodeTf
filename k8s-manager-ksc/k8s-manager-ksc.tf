@@ -254,9 +254,10 @@ module "eks-node-group-a" {
   enabled         = true
   create_iam_role = false
 
-  cluster_name  = local.cluster_name
-  node_role_arn = aws_iam_role.main.arn
-  subnet_ids    = module.vpc.public_subnets
+  cluster_name                  = local.cluster_name
+  node_role_arn                 = aws_iam_role.main.arn
+  subnet_ids                    = module.vpc.public_subnets
+  target_group_arns             = module.alb.target_group_arns  
 
   desired_size = 2
   min_size     = 2
