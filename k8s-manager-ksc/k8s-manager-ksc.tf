@@ -256,7 +256,7 @@ module "eks-node-group-a" {
 
   cluster_name                  = local.cluster_name
   node_role_arn                 = aws_iam_role.main.arn
-  subnet_ids                    = module.vpc.aws_subnet.public[0]
+  subnet_ids                    = module.vpc.public_subnets[0]
   
 
   desired_size = 1
@@ -287,7 +287,7 @@ module "eks-node-group-b" {
 
   cluster_name                  = local.cluster_name
   node_role_arn                 = aws_iam_role.main.arn
-  subnet_ids                    = module.vpc.aws_subnet.public[0]
+  subnet_ids                    = module.vpc.public_subnets[1]
   
 
   desired_size = 1
