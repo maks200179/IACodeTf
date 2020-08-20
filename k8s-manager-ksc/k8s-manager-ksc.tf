@@ -167,7 +167,7 @@ module "my-cluster" {
   map_users                            = var.map_users
   map_accounts                         = var.map_accounts
 }    
-}
+
 
 resource "aws_iam_role" "cluster" {
   name = "eks-cluster-role"
