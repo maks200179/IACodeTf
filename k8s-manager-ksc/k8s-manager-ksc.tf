@@ -79,12 +79,21 @@ resource "aws_security_group" "worker_group_mgmt_two" {
 
 
 data "aws_eks_cluster" "cluster" {
-  name = aws_eks_cluster.cluster_id
+  enabled_cluster_log_types = []
+  name                      = module.my-cluster.cluster_id
+  role_arn                  = aws_iam_role.cluster.arn
+  
+  vpc_config {
+    subnet_ids              = flatten([module.vpc.public_subnets, module.vpc.private_subnets])
+    security_group_ids      = [aws_security_group.all_worker_mgmt.id]
+    endpoint_private_access = "true"
+    endpoint_public_access  = "true"
+  }
 }
 
   
 data "aws_eks_cluster_auth" "cluster" {
-  name = aws_eks_cluster.cluster_id
+  name = module.my-cluster.cluster_id
 }  
 
 data "aws_availability_zones" "available" {
@@ -155,12 +164,7 @@ module "my-cluster" {
   vpc_id          = module.vpc.vpc_id
 
 
-  vpc_config {
-    subnet_ids              = flatten([module.vpc.public_subnets, module.vpc.private_subnets])
-    security_group_ids      = [aws_security_group.all_worker_mgmt.id]
-    endpoint_private_access = "true"
-    endpoint_public_access  = "true"
-  }
+
   
   worker_additional_security_group_ids = [aws_security_group.all_worker_mgmt.id]
   map_roles                            = var.map_roles
