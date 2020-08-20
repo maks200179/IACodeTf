@@ -250,7 +250,7 @@ module "eks-node-group-a" {
   enabled         = true
   create_iam_role = false
 
-  cluster_name  = aws_eks_cluster.cluster.id
+  cluster_name  = module.cluster_name.cluster.id
   node_role_arn = aws_iam_role.main.arn
   subnet_ids    = [module.vpc.public_subnets]
 
