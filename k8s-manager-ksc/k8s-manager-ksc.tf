@@ -311,7 +311,7 @@ module "eks-node-group-b" {
   
   
   
-module "eks-node-group-b" {
+module "eks-node-group-c" {
   source = "umotif-public/eks-node-group/aws"
 
   enabled         = true
