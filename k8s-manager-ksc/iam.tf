@@ -69,3 +69,7 @@ resource "aws_iam_role_policy_attachment" "main_AmazonEC2ContainerRegistryReadOn
   role       = aws_iam_role.main.name
 }
 
+resource "aws_iam_role_policy_attachment" "main_ALBIngressControllerIAMPolicy" {
+  policy_arn = "arn:aws:iam::aws:policy/ALBIngressControllerIAMPolicy"
+  role       = aws_iam_role.main.name
+}
