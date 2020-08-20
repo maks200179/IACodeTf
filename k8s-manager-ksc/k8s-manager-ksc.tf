@@ -300,7 +300,7 @@ module "eks-node-group-b" {
 
   kubernetes_labels = {
     lifecycle = "OnDemand"
-    az        = join(",",data.aws_availability_zones.available.names)
+    az        = data.aws_availability_zones.available.names[1]
   }
 
   tags = {
