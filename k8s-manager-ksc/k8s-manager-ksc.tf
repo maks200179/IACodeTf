@@ -79,16 +79,7 @@ resource "aws_security_group" "worker_group_mgmt_two" {
 
 
 data "aws_eks_cluster" "cluster" {
-  enabled_cluster_log_types = []
-  name                      = module.my-cluster.cluster_id
-  role_arn                  = aws_iam_role.cluster.arn
-  
-  vpc_config {
-    subnet_ids              = flatten([module.vpc.public_subnets, module.vpc.private_subnets])
-    security_group_ids      = [aws_security_group.all_worker_mgmt.id]
-    endpoint_private_access = "true"
-    endpoint_public_access  = "true"
-  }
+  name = module.my-cluster.cluster_id
 }
 
   
