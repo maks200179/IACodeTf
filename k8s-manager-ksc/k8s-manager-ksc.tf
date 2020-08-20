@@ -6,7 +6,20 @@ provider "aws" {
 locals {
   cluster_name = "test-eks-9chRfdVG"
   domain_name  = "xmaxfr.com"
+  key_name = "kubernetes_test_ssh_acess_key"
 }
+
+resource "tls_private_key" "kubernetes_test_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "aws_key_pair" "generated_key" {
+  key_name   = local.key_name
+  public_key = "${tls_private_key.kubernetes_test_key.public_key_openssh}"
+}
+
+
 
 resource "random_string" "suffix" {
   length  = 8
@@ -251,7 +264,7 @@ module "eks-node-group-a" {
 
   instance_types = ["t2.micro"]
 
-  ec2_ssh_key = "eks-test"
+  ec2_ssh_key = tls_private_key.kubernetes_test_key.private_key_pem
 
   kubernetes_labels = {
     lifecycle = "OnDemand"
