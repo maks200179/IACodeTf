@@ -79,12 +79,12 @@ resource "aws_security_group" "worker_group_mgmt_two" {
 
 
 data "aws_eks_cluster" "cluster" {
-  name = module.aws_eks_cluster.cluster_id
+  name = aws_eks_cluster.cluster_id
 }
 
   
 data "aws_eks_cluster_auth" "cluster" {
-  name = module.aws_eks_cluster.cluster_id
+  name = aws_eks_cluster.cluster_id
 }  
 
 data "aws_availability_zones" "available" {
