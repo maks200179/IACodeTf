@@ -233,7 +233,7 @@ resource "aws_iam_role_policy_attachment" "main_AmazonEC2ContainerRegistryReadOn
 }
 
 module "eks-node-group-a" {
-  source = "../../"
+  source = "umotif-public/eks-node-group/aws"
 
   enabled         = true
   create_iam_role = false
