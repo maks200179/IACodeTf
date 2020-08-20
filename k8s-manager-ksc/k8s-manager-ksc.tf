@@ -264,7 +264,7 @@ module "eks-node-group-a" {
 
   instance_types = ["t2.micro"]
 
-  ec2_ssh_key = tls_private_key.kubernetes_test_key.private_key_pem
+  ec2_ssh_key = local.key_name
 
   kubernetes_labels = {
     lifecycle = "OnDemand"
