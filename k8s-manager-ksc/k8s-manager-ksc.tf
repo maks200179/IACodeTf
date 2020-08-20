@@ -307,3 +307,35 @@ module "eks-node-group-b" {
     Environment = "test"
   }
 }      
+
+  
+  
+  
+module "eks-node-group-b" {
+  source = "umotif-public/eks-node-group/aws"
+
+  enabled         = true
+  create_iam_role = false
+
+  cluster_name                  = local.cluster_name
+  node_role_arn                 = aws_iam_role.main.arn
+  subnet_ids                    = [module.vpc.public_subnets[2]]
+  
+
+  desired_size = 1
+  min_size     = 1
+  max_size     = 2
+
+  instance_types = ["t2.micro"]
+
+  ec2_ssh_key = local.key_name
+
+  kubernetes_labels = {
+    lifecycle = "OnDemand"
+    az        = data.aws_availability_zones.available.names[2]
+  }
+
+  tags = {
+    Environment = "test"
+  }
+}        
