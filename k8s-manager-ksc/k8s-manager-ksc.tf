@@ -185,7 +185,7 @@ module "eks-node-group-a" {
   enabled         = true
   create_iam_role = false
 
-  cluster_name                  = local.cluster_name
+  cluster_name                  = module.my-cluster.cluster_id
   node_role_arn                 = aws_iam_role.main.arn
   subnet_ids                    = [module.vpc.public_subnets[0]]
   
@@ -216,7 +216,7 @@ module "eks-node-group-b" {
   enabled         = true
   create_iam_role = false
 
-  cluster_name                  = local.cluster_name
+  cluster_name                  = module.my-cluster.cluster_id
   node_role_arn                 = aws_iam_role.main.arn
   subnet_ids                    = [module.vpc.public_subnets[1]]
   
@@ -248,7 +248,7 @@ module "eks-node-group-c" {
   enabled         = true
   create_iam_role = false
 
-  cluster_name                  = local.cluster_name
+  cluster_name                  = module.my-cluster.cluster_id
   node_role_arn                 = aws_iam_role.main.arn
   subnet_ids                    = [module.vpc.public_subnets[2]]
   
