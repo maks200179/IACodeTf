@@ -147,11 +147,13 @@ resource "aws_iam_openid_connect_provider" "cluster" {
 # EKS Cluster
 #####
 
-resource "aws_eks_cluster" "cluster" {
-  enabled_cluster_log_types = []
-  name                      = "eks"
-  role_arn                  = aws_iam_role.cluster.arn
-  version                   = "1.16"
+module "my-cluster" {
+  source          = "terraform-aws-modules/eks/aws"
+  cluster_name    = local.cluster_name
+  cluster_version = "1.17"
+  subnets         = module.vpc.public_subnets
+  vpc_id          = module.vpc.vpc_id
+
 
   vpc_config {
     subnet_ids              = flatten([module.vpc.public_subnets, module.vpc.private_subnets])
@@ -159,6 +161,12 @@ resource "aws_eks_cluster" "cluster" {
     endpoint_private_access = "true"
     endpoint_public_access  = "true"
   }
+  
+  worker_additional_security_group_ids = [aws_security_group.all_worker_mgmt.id]
+  map_roles                            = var.map_roles
+  map_users                            = var.map_users
+  map_accounts                         = var.map_accounts
+}    
 }
 
 resource "aws_iam_role" "cluster" {
