@@ -256,11 +256,11 @@ module "eks-node-group-a" {
 
   cluster_name                  = local.cluster_name
   node_role_arn                 = aws_iam_role.main.arn
-  subnet_ids                    = module.vpc.public_subnets
+  subnet_ids                    = module.vpc.public_subnets[0]
   
 
-  desired_size = 2
-  min_size     = 2
+  desired_size = 1
+  min_size     = 1
   max_size     = 2
 
   instance_types = ["t2.micro"]
@@ -269,10 +269,41 @@ module "eks-node-group-a" {
 
   kubernetes_labels = {
     lifecycle = "OnDemand"
-    az        = flatten([data.aws_availability_zones.available.names])
+    az        = data.aws_availability_zones.available.names[0]
   }
 
   tags = {
     Environment = "test"
   }
 }    
+  
+  
+  
+module "eks-node-group-a" {
+  source = "umotif-public/eks-node-group/aws"
+
+  enabled         = true
+  create_iam_role = false
+
+  cluster_name                  = local.cluster_name
+  node_role_arn                 = aws_iam_role.main.arn
+  subnet_ids                    = module.vpc.public_subnets[1]
+  
+
+  desired_size = 1
+  min_size     = 1
+  max_size     = 2
+
+  instance_types = ["t2.micro"]
+
+  ec2_ssh_key = local.key_name
+
+  kubernetes_labels = {
+    lifecycle = "OnDemand"
+    az        = join(",",data.aws_availability_zones.available.names)
+  }
+
+  tags = {
+    Environment = "test"
+  }
+}      
