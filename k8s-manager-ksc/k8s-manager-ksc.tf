@@ -182,7 +182,7 @@ module "my-cluster" {
 module "eks-node-group-a" {
   source = "umotif-public/eks-node-group/aws"
 
-  enabled         = true
+  
   create_iam_role = false
 
   cluster_name                  = module.my-cluster.cluster_id
@@ -213,7 +213,7 @@ module "eks-node-group-a" {
 module "eks-node-group-b" {
   source = "umotif-public/eks-node-group/aws"
 
-  enabled         = true
+  
   create_iam_role = false
 
   cluster_name                  = module.my-cluster.cluster_id
@@ -245,7 +245,7 @@ module "eks-node-group-b" {
 module "eks-node-group-c" {
   source = "umotif-public/eks-node-group/aws"
 
-  enabled         = true
+ 
   create_iam_role = false
 
   cluster_name                  = module.my-cluster.cluster_id
