@@ -32,7 +32,7 @@ RUN terraform -v
 
 
 #install requrements
-RUN yum install   -y  https://rhel7.iuscommunity.org/ius-release.rpm
+RUN yum install   -y  https://repo.ius.io/ius-release-el7.rpm
 RUN yum install   -y python36u-pip
 RUN pip3 install  --upgrade pip
 #RUN pip3 install --upgrade setuptools
