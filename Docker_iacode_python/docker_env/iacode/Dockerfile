@@ -32,13 +32,17 @@ RUN terraform -v
 
 
 #install requrements
-RUN yum install   -y  https://repo.ius.io/ius-release-el7.rpm
-RUN yum install   -y python36u-pip
+#RUN yum install   -y  https://rhel7.iuscommunity.org/ius-release.rpm
+#RUN yum install   -y  https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+RUN yum update 
+RUN yum install epel-release -y
+
+RUN yum install   -y python3-pip
 RUN pip3 install  --upgrade pip
 #RUN pip3 install --upgrade setuptools
 RUN pip3 install  --user paramiko
 RUN pip3 install  --user python-jenkins
-RUN pip3 install  PyQt5
+RUN pip3 install  pyqt5==5.14.0
 
 RUN yum install   -y  fontconfig-devel.x86_64 \
                       libXrender.x86_64 \
