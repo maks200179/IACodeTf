@@ -42,6 +42,11 @@ variable "map_users" {
       username = "terra_user"
       groups   = ["system:masters"]
     },
+    {
+      userarn  = "arn:aws:iam::411543714039:user/aws_cli"
+      username = "aws_cli"
+      groups   = ["system:masters"]
+    },
 
   ]
 }
