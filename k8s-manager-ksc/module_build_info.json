@@ -3,5 +3,6 @@
     "network_module_name": "None",
     "username"           : "centos",
     "swarm"              : "True",
-    "manager"            : "True"
+    "manager"            : "True",
+    "eks"                : "True"
 }      
