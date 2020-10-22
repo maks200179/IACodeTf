@@ -21,7 +21,7 @@ variable "map_roles" {
 
   default = [
     {
-      rolearn  = "arn:aws:iam::411543714039:role/role1"
+      rolearn  = "arn:aws:iam::411543714039:role/eks-managed-group-node-role"
       username = "terra_user"
       groups   = ["system:masters"]
     },
