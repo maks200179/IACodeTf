@@ -223,7 +223,7 @@ EOF
         if  [[ ! -z $(helm version --short) ]] ; then
             #add aws ingress 
             helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-            helm install incubator/aws-alb-ingress-controller --set autoDiscoverAwsRegion=true --set autoDiscoverAwsVpcID=true --set clusterName=test-eks-9chRfdVG
+            helm install aws-ingress incubator/aws-alb-ingress-controller --set autoDiscoverAwsRegion=true --set autoDiscoverAwsVpcID=true --set clusterName=test-eks-9chRfdVG
 
 
 
