@@ -7,6 +7,7 @@ while [[ ${1:0:2} == '--' ]] && [[ $# -ge 2 ]] ; do
     [[ $1 == '--docker_env' ]] && { docker_env="yes"; };
     [[ $1 == '--docker_compose_up' ]] && { docker_compose_up="yes"; };
     [[ $1 == '--init_swarm_manager' ]] && { init_swarm_manager="${2}"; };
+    [[ $1 == '--post_deploy_k8s' ]] && { post_deploy_k8s="${2}"; };
     [[ $1 == '--rebuild_swarm_manager' ]] && { rebuild_swarm_manager="${2}"; };
     [[ $1 == '--install_db_crone_tab' ]] && { install_db_crone="${2}"; };
     [[ $1 == '--install_kube' ]] && { install_kube="${2}"; };
@@ -215,5 +216,23 @@ EOF
         
     fi
     
+    
+    
+
+    if  [[ $post_deploy_k8s == "yes"  ]] ; then
+        if  [[ ! -z $(helm version --short) ]] ; then
+            #add aws ingress 
+            helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+            helm install incubator/aws-alb-ingress-controller --set autoDiscoverAwsRegion=true --set autoDiscoverAwsVpcID=true --set clusterName=test-eks-9chRfdVG
+
+
+
+        else 
+            
+            echo "helm not  installed."
+                
+        fi
+        
+    fi
     
     
