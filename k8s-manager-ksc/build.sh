@@ -225,7 +225,7 @@ EOF
             helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
             helm install aws-ingress incubator/aws-alb-ingress-controller --set autoDiscoverAwsRegion=true --set autoDiscoverAwsVpcID=true --set clusterName=test-eks-9chRfdVG
             helm repo add elastic https://helm.elastic.co
-            helm install ${es_cluster_name} elastic/elasticsearch
+            helm install es-test1 elastic/elasticsearch
             
 
 
