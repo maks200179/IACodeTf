@@ -194,7 +194,7 @@ module "eks-node-group-a" {
   min_size     = 1
   max_size     = 2
 
-  instance_types = ["t2.micro"]
+  instance_types = ["t2.medium"]
 
   ec2_ssh_key = local.key_name
 
@@ -225,7 +225,7 @@ module "eks-node-group-b" {
   min_size     = 1
   max_size     = 2
 
-  instance_types = ["t2.micro"]
+  instance_types = ["t2.medium"]
 
   ec2_ssh_key = local.key_name
 
@@ -257,7 +257,7 @@ module "eks-node-group-c" {
   min_size     = 1
   max_size     = 2
 
-  instance_types = ["t2.micro"]
+  instance_types = ["t2.medium"]
 
   ec2_ssh_key = local.key_name
 
