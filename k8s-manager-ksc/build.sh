@@ -226,6 +226,8 @@ EOF
             helm install aws-ingress incubator/aws-alb-ingress-controller --set autoDiscoverAwsRegion=true --set autoDiscoverAwsVpcID=true --set clusterName=test-eks-9chRfdVG
             helm repo add elastic https://helm.elastic.co
             helm install es-test1 elastic/elasticsearch
+            helm install kibanaesarticle elastic/kibana --set=resources.limits.cpu=700m,resources.requests.cpu=700m,resources.limits.memory=1.2Gi,resources.requests.memory=1.2Gi,service.type=NodePort
+            kubectl apply -f /usr/src/iocode/kibana-ingress.yaml
             
 
 
