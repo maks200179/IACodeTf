@@ -229,28 +229,27 @@ EOF
             helm install kibanaesarticle elastic/kibana --set=resources.limits.cpu=700m,resources.requests.cpu=700m,resources.limits.memory=1.2Gi,resources.requests.memory=1.2Gi,service.type=NodePort
             kubectl apply -f /usr/src/iacode/moduls/iacode/k8s-manager-ksc/kibana-ingress.yaml
             alb_address=$(kubectl describe ingress kibana | grep Address: | tr -d 'Address:' | tr -d ' ')
-            echo "${alb_address}"
             hosted_zone_id=$(aws route53 list-hosted-zones-by-name | grep xmaxfr.com | awk '{ print $3 }')
-            record_set_id=$(aws route53 list-resource-record-sets --hosted-zone-id "${hosted_zone_id}"  --query "ResourceRecordSets[?Name == 'xmaxfr.com.']")
+            record_set_id=$(aws route53 list-resource-record-sets --hosted-zone-id Z09706043HH70LWD55HPR --query "ResourceRecordSets[?Name == 'xmaxfr.com.']" | grep "ALIASTARGET" | awk '{ print $4 }')
             
             cat <<EOF > /usr/src/iacode/moduls/iacode/k8s-manager-ksc/route53.json
-            {
-              "Comment": "Update record to reflect new DNSName of fresh deploy",
-              "Changes": [
-            {
-              "Action": "UPSERT",
-              "ResourceRecordSet": {
-                "AliasTarget": {
-                    "HostedZoneId": "${record_set_id}", 
-                    "EvaluateTargetHealth": false, 
-                    "DNSName": "dualstack${record_set_id}"
-                }, 
-                "Type": "A", 
-                "Name": "xmaxfr.com."
-              }
-            }
-          ]
-        }
+{
+  "Comment": "Update record to reflect new DNSName of fresh deploy",
+  "Changes": [
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "AliasTarget": {
+            "HostedZoneId": "${record_set_id}", 
+            "EvaluateTargetHealth": false, 
+            "DNSName": "dualstack.${alb_address}"
+        }, 
+        "Type": "A", 
+        "Name": "xmaxfr.com."
+      }
+    }
+  ]
+}
 EOF
             aws route53 change-resource-record-sets --hosted-zone-id "${hosted_zone_id}" --change-batch file:///usr/src/iacode/moduls/iacode/k8s-manager-ksc/route53.json
 
