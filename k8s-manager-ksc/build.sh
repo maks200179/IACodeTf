@@ -233,7 +233,7 @@ EOF
             hosted_zone_id=$(aws route53 list-hosted-zones-by-name | grep xmaxfr.com | awk '{ print $3 }')
             record_set_id=$(aws route53 list-resource-record-sets --hosted-zone-id "${hosted_zone_id}"  --query "ResourceRecordSets[?Name == 'xmaxfr.com.']")
             
-            cat <<EOF > /usr/src/iocode/route53.json
+            cat <<EOF > /usr/src/iacode/moduls/iacode/k8s-manager-ksc/route53.json
 {
   "Comment": "Update record to reflect new DNSName of fresh deploy",
   "Changes": [
@@ -252,7 +252,7 @@ EOF
   ]
 }
 EOF
-            aws route53 change-resource-record-sets --hosted-zone-id "${hosted_zone_id}" --change-batch file:///usr/src/iocode/route53.json
+            aws route53 change-resource-record-sets --hosted-zone-id "${hosted_zone_id}" --change-batch file:///usr/src/iacode/moduls/iacode/k8s-manager-ksc/route53.json
 
         else 
             
