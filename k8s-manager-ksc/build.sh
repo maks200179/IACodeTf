@@ -227,7 +227,7 @@ EOF
             helm repo add elastic https://helm.elastic.co
             helm install es-test1 elastic/elasticsearch
             helm install kibanaesarticle elastic/kibana --set=resources.limits.cpu=700m,resources.requests.cpu=700m,resources.limits.memory=1.2Gi,resources.requests.memory=1.2Gi,service.type=NodePort
-            kubectl apply -f /usr/src/iocode/kibana-ingress.yaml
+            kubectl apply -f /usr/src/iacode/moduls/iacode/k8s-manager-ksc/kibana-ingress.yaml
             alb_address=$(kubectl describe ingress kibana | grep Address: | tr -d 'Address:' | tr -d ' ')
             echo "${alb_address}"
             hosted_zone_id=$(aws route53 list-hosted-zones-by-name | grep xmaxfr.com | awk '{ print $3 }')
