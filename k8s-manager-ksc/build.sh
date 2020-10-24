@@ -236,7 +236,7 @@ if  [[ $post_deploy_k8s == "yes"  ]] ; then
             echo "${alb_address}"
             hosted_zone_id=$(aws route53 list-hosted-zones-by-name | grep xmaxfr.com | awk '{ print $3 }')
             echo "${hosted_zone_id}"
-            record_set_id=$(aws route53 list-resource-record-sets --hosted-zone-id Z09706043HH70LWD55HPR --query "ResourceRecordSets[?Name == 'xmaxfr.com.']" | grep "ALIASTARGET" | awk '{ print $4 }')
+            record_set_id=$(aws route53 list-resource-record-sets --hosted-zone-id "${hosted_zone_id}" --query "ResourceRecordSets[?Name == 'xmaxfr.com.']" | grep "ALIASTARGET" | awk '{ print $4 }')
             echo "${record_set_id}"
             cat <<EOF > /usr/src/iacode/moduls/iacode/k8s-manager-ksc/route53.json
 {
