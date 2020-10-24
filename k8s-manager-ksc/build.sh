@@ -228,7 +228,8 @@ EOF
             helm install es-test1 elastic/elasticsearch
             helm install kibanaesarticle elastic/kibana --set=resources.limits.cpu=700m,resources.requests.cpu=700m,resources.limits.memory=1.2Gi,resources.requests.memory=1.2Gi,service.type=NodePort
             kubectl apply -f /usr/src/iocode/kibana-ingress.yaml
-            
+            alb_address=$(kubectl describe ingress kibana | grep Address:)
+            echo "${alb_address}"
 
 
         else 
