@@ -234,23 +234,23 @@ EOF
             record_set_id=$(aws route53 list-resource-record-sets --hosted-zone-id "${hosted_zone_id}"  --query "ResourceRecordSets[?Name == 'xmaxfr.com.']")
             
             cat <<EOF > /usr/src/iacode/moduls/iacode/k8s-manager-ksc/route53.json
-{
-  "Comment": "Update record to reflect new DNSName of fresh deploy",
-  "Changes": [
-    {
-      "Action": "UPSERT",
-      "ResourceRecordSet": {
-        "AliasTarget": {
-            "HostedZoneId": "${record_set_id}", 
-            "EvaluateTargetHealth": false, 
-            "DNSName": "dualstack${record_set_id}"
-        }, 
-        "Type": "A", 
-        "Name": "xmaxfr.com."
-      }
-    }
-  ]
-}
+            {
+              "Comment": "Update record to reflect new DNSName of fresh deploy",
+              "Changes": [
+            {
+              "Action": "UPSERT",
+              "ResourceRecordSet": {
+                "AliasTarget": {
+                    "HostedZoneId": "${record_set_id}", 
+                    "EvaluateTargetHealth": false, 
+                    "DNSName": "dualstack${record_set_id}"
+                }, 
+                "Type": "A", 
+                "Name": "xmaxfr.com."
+              }
+            }
+          ]
+        }
 EOF
             aws route53 change-resource-record-sets --hosted-zone-id "${hosted_zone_id}" --change-batch file:///usr/src/iacode/moduls/iacode/k8s-manager-ksc/route53.json
 
