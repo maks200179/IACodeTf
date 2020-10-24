@@ -230,7 +230,29 @@ EOF
             kubectl apply -f /usr/src/iocode/kibana-ingress.yaml
             alb_address=$(kubectl describe ingress kibana | grep Address: | tr -d 'Address:' | tr -d ' ')
             echo "${alb_address}"
-
+            hosted_zone_id=$(aws route53 list-hosted-zones-by-name | grep xmaxfr.com | awk '{ print $3 }')
+            record_set_id=$(aws route53 list-resource-record-sets --hosted-zone-id "${hosted_zone_id}"  --query "ResourceRecordSets[?Name == 'xmaxfr.com.']")
+            
+            cat <<EOF > /usr/src/iocode/route53.json
+{
+  "Comment": "Update record to reflect new DNSName of fresh deploy",
+  "Changes": [
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "AliasTarget": {
+            "HostedZoneId": "${record_set_id}", 
+            "EvaluateTargetHealth": false, 
+            "DNSName": "dualstack${record_set_id}"
+        }, 
+        "Type": "A", 
+        "Name": "xmaxfr.com."
+      }
+    }
+  ]
+}
+EOF
+            aws route53 change-resource-record-sets --hosted-zone-id "${hosted_zone_id}" --change-batch file:///usr/src/iocode/route53.json
 
         else 
             
