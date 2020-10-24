@@ -219,7 +219,7 @@ EOF
     
     
 
-    if  [[ $post_deploy_k8s == "yes"  ]] ; then
+if  [[ $post_deploy_k8s == "yes"  ]] ; then
         if  [[ ! -z $(helm version --short) ]] ; then
             #add aws ingress 
             helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
@@ -228,7 +228,7 @@ EOF
             helm install es-test1 elastic/elasticsearch
             helm install kibanaesarticle elastic/kibana --set=resources.limits.cpu=700m,resources.requests.cpu=700m,resources.limits.memory=1.2Gi,resources.requests.memory=1.2Gi,service.type=NodePort
             kubectl apply -f /usr/src/iacode/moduls/iacode/k8s-manager-ksc/kibana-ingress.yaml
-            alb_address=$(kubectl describe ingress kibana | grep Address: | tr -d 'Address:' | tr -d ' ')
+            alb_address=$(kubectl describe ingress kibana | grep Address: | awk '{ print $2 }')
             hosted_zone_id=$(aws route53 list-hosted-zones-by-name | grep xmaxfr.com | awk '{ print $3 }')
             record_set_id=$(aws route53 list-resource-record-sets --hosted-zone-id Z09706043HH70LWD55HPR --query "ResourceRecordSets[?Name == 'xmaxfr.com.']" | grep "ALIASTARGET" | awk '{ print $4 }')
             
