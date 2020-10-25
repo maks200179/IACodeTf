@@ -216,10 +216,11 @@ EOF
         
     fi
     
-    
-    
+    #another repo helm to deploy es using best practice bitnami
+    #helm repo add bitnami https://charts.bitnami.com/bitnami
+    #helm install --name elasticsearch --set name=elasticsearch,master.replicas=3,coordinating.service.type=LoadBalancer bitnami/elasticsearch
 
-if  [[ $post_deploy_k8s == "yes"  ]] ; then
+    if  [[ $post_deploy_k8s == "yes"  ]] ; then
         if  [[ ! -z $(helm version --short) ]] ; then
             #add aws ingress 
             helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
