@@ -229,10 +229,10 @@ EOF
             
             # es-helm
             helm repo add elastic https://helm.elastic.co
-            helm install --wait --timeout 700s es-test1 elastic/elasticsearch
-            helm upgrade --wait --timeout 600s --install --values /usr/src/iacode/moduls/iacode/k8s-manager-ksc/es-k8s-conf/master.yaml  es-test1 elastic/elasticsearch
-            helm upgrade --wait --timeout 600s --install --values /usr/src/iacode/moduls/iacode/k8s-manager-ksc/es-k8s-conf/data.yaml    es-test1 elastic/elasticsearch
-            helm upgrade --wait --timeout 600s --install --values /usr/src/iacode/moduls/iacode/k8s-manager-ksc/es-k8s-conf/client.yaml  es-test1 elastic/elasticsearch
+            helm install --wait --timeout 700s  elastic/elasticsearch
+            helm upgrade --wait --timeout 600s --install --values /usr/src/iacode/moduls/iacode/k8s-manager-ksc/es-k8s-conf/master.yaml   elastic/elasticsearch
+            helm upgrade --wait --timeout 600s --install --values /usr/src/iacode/moduls/iacode/k8s-manager-ksc/es-k8s-conf/data.yaml     elastic/elasticsearch
+            helm upgrade --wait --timeout 600s --install --values /usr/src/iacode/moduls/iacode/k8s-manager-ksc/es-k8s-conf/client.yaml   elastic/elasticsearch
             helm install --wait --timeout 300s kibanaesarticle elastic/kibana --set=resources.limits.cpu=700m,resources.requests.cpu=700m,resources.limits.memory=1.2Gi,resources.requests.memory=1.2Gi,service.type=NodePort
             
             #ingress
