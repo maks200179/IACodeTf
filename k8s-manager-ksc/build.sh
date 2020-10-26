@@ -222,21 +222,28 @@ EOF
 
     if  [[ $post_deploy_k8s == "yes"  ]] ; then
         if  [[ ! -z $(helm version --short) ]] ; then
+            
             #add aws ingress 
             helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
             helm install --wait --timeout 300s aws-ingress incubator/aws-alb-ingress-controller --set autoDiscoverAwsRegion=true --set autoDiscoverAwsVpcID=true --set clusterName=test-eks-9chRfdVG
+            
+            # es-helm
             helm repo add elastic https://helm.elastic.co
             helm install --wait --timeout 700s es-test1 elastic/elasticsearch
             helm upgrade --wait --timeout 600s --install --values /usr/src/iacode/moduls/iacode/k8s-manager-ksc/es-k8s-conf/master.yaml  es-test1 elastic/elasticsearch
             helm upgrade --wait --timeout 600s --install --values /usr/src/iacode/moduls/iacode/k8s-manager-ksc/es-k8s-conf/data.yaml    es-test1 elastic/elasticsearch
             helm upgrade --wait --timeout 600s --install --values /usr/src/iacode/moduls/iacode/k8s-manager-ksc/es-k8s-conf/client.yaml  es-test1 elastic/elasticsearch
             helm install --wait --timeout 300s kibanaesarticle elastic/kibana --set=resources.limits.cpu=700m,resources.requests.cpu=700m,resources.limits.memory=1.2Gi,resources.requests.memory=1.2Gi,service.type=NodePort
+            
+            #ingress
             kubectl apply -f /usr/src/iacode/moduls/iacode/k8s-manager-ksc/kibana-ingress.yaml
             
             while [[ ! $(kubectl describe ingress kibana | grep Address: | awk '{ print $2 }') ]]
             do
               sleep 0.1
             done
+            
+            #set route53 aliase for a record 
             alb_address=$(kubectl describe ingress kibana | grep Address: | awk '{ print $2 }')
             echo "${alb_address}"
             hosted_zone_id=$(aws route53 list-hosted-zones-by-name | grep xmaxfr.com | awk '{ print $3 }')
