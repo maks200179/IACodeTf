@@ -35,7 +35,11 @@ RUN terraform -v
 #RUN yum install   -y  https://rhel7.iuscommunity.org/ius-release.rpm
 #RUN yum install   -y  https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 RUN yum update 
+<<<<<<< HEAD
 RUN yum install epel-release openssl -y
+=======
+RUN yum install epel-release -y
+>>>>>>> 83264dcac7cd7a05f010bbcfc5dce7ee01240c84
 
 RUN yum install   -y python3-pip
 RUN pip3 install  --upgrade pip

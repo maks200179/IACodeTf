@@ -21,8 +21,13 @@ variable "map_roles" {
 
   default = [
     {
-      rolearn  = "arn:aws:iam::411543714039:role/role1"
+      rolearn  = "arn:aws:iam::411543714039:role/eks-managed-group-node-role"
       username = "terra_user"
+      groups   = ["system:masters"]
+    },
+    {
+      rolearn  = "arn:aws:iam::411543714039:role/eks-managed-group-node-role"
+      username = "aws_cli"
       groups   = ["system:masters"]
     },
   ]
@@ -40,6 +45,11 @@ variable "map_users" {
     {
       userarn  = "arn:aws:iam::411543714039:user/terra_user"
       username = "terra_user"
+      groups   = ["system:masters"]
+    },
+    {
+      userarn  = "arn:aws:iam::411543714039:user/aws_cli"
+      username = "aws_cli"
       groups   = ["system:masters"]
     },
 

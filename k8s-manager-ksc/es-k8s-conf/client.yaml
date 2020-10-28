@@ -1,0 +1,10 @@
+---
+clusterName: "es-test1"
+nodeGroup: "client"
+roles:
+  master: "false"
+  ingest: "false"
+  data: "false"
+replicas: 2
+service:
+  type: "LoadBalancer"

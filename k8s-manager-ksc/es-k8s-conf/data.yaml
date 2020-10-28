@@ -1,0 +1,8 @@
+---
+clusterName: "es-test1"
+nodeGroup: "data"
+roles:
+  master: "false"
+  ingest: "true"
+  data: "true"
+replicas: 2
