@@ -187,13 +187,22 @@ class postBuildServer(configFileIni):
         self.swarm                  = "swarm" in json_data
         self.manager                = "manager" in json_data
         
+        
+
+
         if "manager_module_name" in json_data:
             self.manager_module_name    = json_data["manager_module_name"]
+        
+        if "eks" in json_data:
+            self.eks    = eval(json_data["eks"])   
 
+        
+  
         self.ssh_key_path = '%s/%s/%s' % (self.terraform_data, self.network_module_name , self.ssh_key_name)
-        if not os.path.isfile(self.ssh_key_path):
-            msg = 'the network module not installed please install it first'
-            return msg
+        if self.network_module_name != "None":
+            if not os.path.isfile(self.ssh_key_path):
+                msg = 'the network module not installed please install it first'
+                return msg
     
         return True
     
@@ -422,16 +431,36 @@ class postBuildServer(configFileIni):
                 self.logging.writeLogWarning(msg)
                 return msg
 
+        elif 'checkifEKS' in command:
+            print (self.eks) 
+            
+            if self.eks is True:
+                return True
+            else:
+                return False
 
+        
+        elif 'getEksToken' in command:
+            cmdGetEksToken            = """ aws eks  update-kubeconfig --name test-eks-9chRfdVG """
+            stdout_token =   self.cmdCommunicateOS(cmdGetEksToken)
+            return stdout_token 
+        
 
-
-
-
-
-
+        elif 'postDeployK8S' in command:
+            cmdpostDeployK8S          = """'/usr/bin/bash' '%s/build.sh' '--post_deploy_k8s' 'yes'""" %(self.main_module_workspace)  
+            #cmdpostDeployK8S          = """  "sudo bash %s/build.sh --post_deploy_k8s yes" """ %(self.main_module_workspace)
+            stdout_ctl =   self.cmdCommunicateOS(cmdpostDeployK8S)
+            return stdout_ctl
+        
+        elif 'deleteResorsesK8S' in command:
+            cmdDeleteResorsesK8S          = """kubectl delete ingress kibana"""  
+            #cmdpostDeployK8S          = """  "sudo bash %s/build.sh --post_deploy_k8s yes" """ %(self.main_module_workspace)
+            stdout_ctl =   self.cmdCommunicateOS(cmdDeleteResorsesK8S)
+            return stdout_ctl
 
 
     def mainExecCMD(self, command, param=None , param2=None):
+        
         
         cmdCheckServerOnline      = """ ssh -o "StrictHostKeyChecking=no" -o "ConnectTimeout=2" -i "%s" "%s@%s" "uname -a" """ % (self.ssh_key_path, self.user_name, self.server_ip)
         cmdRsync                  = """ rsync   -c -arh -i --rsync-path "sudo rsync"  --info=COPY --info=REMOVE  --delete --no-times --no-perms --no-owner --no-group    "%s" -e "ssh -i %s -o "StrictHostKeyChecking=no""   "centos@%s:/var/" """ % (self.main_module_workspace, self.ssh_key_path, self.server_ip)
@@ -465,7 +494,7 @@ class postBuildServer(configFileIni):
     def cmdCommunicateOS(self, command):
 
 
-
+        self.logging.writeLogWarning(shlex.split(command))
 
         p = Popen(shlex.split(command), stdin=PIPE, stdout=PIPE, stderr=PIPE)
         (stdout, stderr) = p.communicate()

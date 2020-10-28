@@ -13,6 +13,7 @@ services:
 
         ports:
             - "72:22"
+            - "5601:5601"
         networks:
             - iacode
         tty: true
