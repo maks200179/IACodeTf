@@ -223,8 +223,12 @@ EOF
     if  [[ $post_deploy_k8s == "yes"  ]] ; then
         if  [[ ! -z $(helm version --short) ]] ; then
             #add aws ingress 
-            helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-            helm install --wait --timeout 300s aws-ingress incubator/aws-alb-ingress-controller --set autoDiscoverAwsRegion=true --set autoDiscoverAwsVpcID=true --set clusterName=test-eks-9chRfdVG
+            #helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+            #helm install --wait --timeout 300s aws-ingress incubator/aws-alb-ingress-controller --set autoDiscoverAwsRegion=true --set autoDiscoverAwsVpcID=true --set clusterName=test-eks-9chRfdVG
+            
+            helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+            helm install ingress ingress-nginx/ingress-nginx
+            
             
             #helm repo add elastic https://helm.elastic.co
             #helm install --wait --timeout 700s es-test1 elastic/elasticsearch
