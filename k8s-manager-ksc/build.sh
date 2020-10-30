@@ -246,7 +246,7 @@ EOF
             
             kubectl apply -f /usr/src/iacode/moduls/iacode/k8s-manager-ksc/kibana-ingress.yaml
             
-            while [[ ! $(kubectl describe ingress kibana | grep Address: | awk '{ print $2 }') ]]
+            while [[ ! $(kubectl describe svc ingress-ingress-nginx-controller | grep Ingress: | awk '{ print $3 }') ]]
             do
               sleep 0.1
             done
