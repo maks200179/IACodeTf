@@ -250,7 +250,7 @@ EOF
             do
               sleep 0.1
             done
-            alb_address=$(kubectl describe ingress kibana | grep Address: | awk '{ print $2 }')
+            alb_address=$(kubectl describe svc ingress-ingress-nginx-controller | grep Ingress: | awk '{ print $3 }')
             echo "${alb_address}"
             hosted_zone_id=$(aws route53 list-hosted-zones-by-name | grep xmaxfr.com | awk '{ print $3 }')
             echo "${hosted_zone_id}"
