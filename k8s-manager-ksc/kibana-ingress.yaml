@@ -4,15 +4,23 @@ metadata:
   name: "kibana"
   namespace: "default"
   annotations:
-    kubernetes.io/ingress.class: alb
-    alb.ingress.kubernetes.io/scheme: internet-facing
+    #kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    #nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
   labels:
     app: kibana
 spec:
   rules:
-    - http:
-        paths:
-          - path: /*
-            backend:
-              serviceName: "kibana-es"
-              servicePort: 5601
+  - host: xmaxfr.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: kibana-es
+          servicePort: 5601
+      - path: /es
+        backend:
+          serviceName: elasticsearch-elasticsearch-coordinating-only
+          servicePort: 9200 
