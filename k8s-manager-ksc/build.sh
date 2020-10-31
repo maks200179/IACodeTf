@@ -8,6 +8,7 @@ while [[ ${1:0:2} == '--' ]] && [[ $# -ge 2 ]] ; do
     [[ $1 == '--docker_compose_up' ]] && { docker_compose_up="yes"; };
     [[ $1 == '--init_swarm_manager' ]] && { init_swarm_manager="${2}"; };
     [[ $1 == '--post_deploy_k8s' ]] && { post_deploy_k8s="${2}"; };
+    [[ $1 == '--delete_eks_all' ]] && { delete_eks_all="${2}"; };
     [[ $1 == '--rebuild_swarm_manager' ]] && { rebuild_swarm_manager="${2}"; };
     [[ $1 == '--install_db_crone_tab' ]] && { install_db_crone="${2}"; };
     [[ $1 == '--install_kube' ]] && { install_kube="${2}"; };
@@ -219,6 +220,22 @@ EOF
     #another repo helm to deploy es using best practice bitnami
     #helm repo add bitnami https://charts.bitnami.com/bitnami
     #helm install --name elasticsearch --set name=elasticsearch,master.replicas=3,coordinating.service.type=LoadBalancer bitnami/elasticsearch
+
+    if  [[ ! -z ${delete_eks_all}  ]] ; then
+        if  [[ ! -z $(kubectl get all) ]] ; then
+            
+            kubectl delete ingress kibana 
+            helm ls --all --short | xargs -L1 helm delete && kubectl delete all --all 
+            kubectl delete pvc --all 
+            kubectl delete pv --all           
+                
+        fi
+        
+    fi
+
+
+
+
 
     if  [[ $post_deploy_k8s == "yes"  ]] ; then
         if  [[ ! -z $(helm version --short) ]] ; then
