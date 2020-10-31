@@ -453,7 +453,7 @@ class postBuildServer(configFileIni):
             return stdout_ctl
         
         elif 'deleteResorsesK8S' in command:
-            cmdDeleteResorsesK8S          = """kubectl delete ingress kibana"""  
+            cmdDeleteResorsesK8S          = """'/usr/bin/bash' '%s/build.sh' '--delete_eks_all' 'yes'""" %(self.main_module_workspace)
             #cmdpostDeployK8S          = """  "sudo bash %s/build.sh --post_deploy_k8s yes" """ %(self.main_module_workspace)
             stdout_ctl =   self.cmdCommunicateOS(cmdDeleteResorsesK8S)
             return stdout_ctl
