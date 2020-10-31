@@ -225,7 +225,7 @@ EOF
         if  [[ ! -z $(kubectl get all) ]] ; then
             
             
-            helm ls --all --short | xargs -L1 helm delete 
+            helm ls --all --short | xargs -L1 helm delete --purge 
             kubectl delete ingress kibana 
             while [[  $(kubectl describe svc ingress-ingress-nginx-controller | grep Ingress: | awk '{ print $3 }') ]]
             do
