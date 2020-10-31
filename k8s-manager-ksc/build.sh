@@ -227,6 +227,10 @@ EOF
             
             helm ls --all --short | xargs -L1 helm delete 
             kubectl delete ingress kibana 
+            while [[  $(kubectl describe svc ingress-ingress-nginx-controller | grep Ingress: | awk '{ print $3 }') ]]
+            do
+              sleep 0.1
+            done
             #kubectl delete all --all 
             #kubectl delete pvc --all 
             #kubectl delete pv --all           
