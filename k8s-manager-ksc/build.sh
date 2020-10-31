@@ -227,8 +227,8 @@ EOF
             kubectl delete ingress kibana 
             helm ls --all --short | xargs -L1 helm delete 
             #kubectl delete all --all 
-            kubectl delete pvc --all 
-            kubectl delete pv --all           
+            #kubectl delete pvc --all 
+            #kubectl delete pv --all           
                 
         fi
         
