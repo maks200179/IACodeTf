@@ -16,16 +16,14 @@ spec:
   - host: kibana.xmaxfr.com
     http:
       paths:
-      - pathType: Prefix
-        path: "/"
+      - path: "/"
         backend:
           serviceName: kibana-es
           servicePort: 5601
   - host: es.xmaxfr.com
     http:
       paths:
-      - pathType: Prefix
-        path: "/"
+      - path: "/"
         backend:
           serviceName: elasticsearch-elasticsearch-coordinating-only
           servicePort: 9200
