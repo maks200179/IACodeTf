@@ -224,8 +224,9 @@ EOF
     if  [[ ! -z ${delete_eks_all}  ]] ; then
         if  [[ ! -z $(kubectl get all) ]] ; then
             
-            kubectl delete ingress kibana 
+            
             helm ls --all --short | xargs -L1 helm delete 
+            kubectl delete ingress kibana 
             #kubectl delete all --all 
             #kubectl delete pvc --all 
             #kubectl delete pv --all           
