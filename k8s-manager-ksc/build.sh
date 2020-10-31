@@ -252,9 +252,9 @@ EOF
             done
             alb_address=$(kubectl describe svc ingress-ingress-nginx-controller | grep Ingress: | awk '{ print $3 }')
             echo "${alb_address}"
-            hosted_zone_id=$(aws route53 list-hosted-zones-by-name | grep xmaxfr.com | awk '{ print $3 }')
+            hosted_zone_id=$(aws route53 list-hosted-zones-by-name | grep kibana.xmaxfr.com | awk '{ print $3 }')
             echo "${hosted_zone_id}"
-            record_set_id=$(aws route53 list-resource-record-sets --hosted-zone-id "${hosted_zone_id}" --query "ResourceRecordSets[?Name == 'xmaxfr.com.']" | grep "ALIASTARGET" | awk '{ print $4 }')
+            record_set_id=$(aws route53 list-resource-record-sets --hosted-zone-id "${hosted_zone_id}" --query "ResourceRecordSets[?Name == 'kibana.xmaxfr.com.']" | grep "ALIASTARGET" | awk '{ print $4 }')
             echo "${record_set_id}"
             cat <<EOF > /usr/src/iacode/moduls/iacode/k8s-manager-ksc/route53.json
 {
@@ -269,13 +269,40 @@ EOF
             "DNSName": "dualstack.${alb_address}"
         }, 
         "Type": "A", 
-        "Name": "xmaxfr.com."
+        "Name": "kibana.xmaxfr.com."
       }
     }
   ]
 }
 EOF
             aws route53 change-resource-record-sets --hosted-zone-id "${hosted_zone_id}" --change-batch file:///usr/src/iacode/moduls/iacode/k8s-manager-ksc/route53.json
+
+            hosted_zone_id=$(aws route53 list-hosted-zones-by-name | grep es.xmaxfr.com | awk '{ print $3 }')
+            echo "${hosted_zone_id}"
+            record_set_id=$(aws route53 list-resource-record-sets --hosted-zone-id "${hosted_zone_id}" --query "ResourceRecordSets[?Name == 'es.xmaxfr.com.']" | grep "ALIASTARGET" | awk '{ print $4 }')
+            echo "${record_set_id}"
+            cat <<EOF > /usr/src/iacode/moduls/iacode/k8s-manager-ksc/route53.json
+{
+  "Comment": "Update record to reflect new DNSName of fresh deploy",
+  "Changes": [
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "AliasTarget": {
+            "HostedZoneId": "${record_set_id}", 
+            "EvaluateTargetHealth": false, 
+            "DNSName": "dualstack.${alb_address}"
+        }, 
+        "Type": "A", 
+        "Name": "es.xmaxfr.com."
+      }
+    }
+  ]
+}
+EOF
+            aws route53 change-resource-record-sets --hosted-zone-id "${hosted_zone_id}" --change-batch file:///usr/src/iacode/moduls/iacode/k8s-manager-ksc/route53.json
+
+
 
         else 
             
