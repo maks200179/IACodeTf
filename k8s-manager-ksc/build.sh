@@ -225,7 +225,8 @@ EOF
         if  [[ ! -z $(kubectl get all) ]] ; then
             
             kubectl delete ingress kibana 
-            helm ls --all --short | xargs -L1 helm delete && kubectl delete all --all 
+            helm ls --all --short | xargs -L1 helm delete 
+            #kubectl delete all --all 
             kubectl delete pvc --all 
             kubectl delete pv --all           
                 
