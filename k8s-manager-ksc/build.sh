@@ -231,10 +231,11 @@ EOF
             do
               sleep 0.1
             done
-            sleep 15
+            
             #kubectl delete all --all 
-            #kubectl delete pvc --all 
-            #kubectl delete pv --all           
+            kubectl delete pvc --all 
+            kubectl delete pv --all     
+            sleep 15
                 
         fi
         
