@@ -47,6 +47,11 @@ variable "map_users" {
       username = "terra"
       groups   = ["system:masters"]
     },
+    {
+      userarn  = "arn:aws:iam::411543714039:user/terra_user"
+      username = "terra_user"
+      groups   = ["system:masters"]
+    },
 
   ]
 }
