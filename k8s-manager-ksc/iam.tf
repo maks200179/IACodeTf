@@ -69,16 +69,5 @@ resource "aws_iam_role_policy_attachment" "main_AmazonEC2ContainerRegistryReadOn
   role       = aws_iam_role.main.name
 }
 
-resource "aws_iam_role_policy_attachment" "main_ALBIngressControllerIAMPolicy" {
-  policy_arn = aws_iam_policy.this.arn
-  role       = aws_iam_role.main.name
-}
-
-
-resource "aws_iam_policy" "this" {
-  name        = "node-group-alb-management"
-  description = "Permissions that are required to manage AWS Application Load Balancers for nodes."
-  policy      = "${file("${path.module}/policy-alb-node.json")}"
-}
 
 
