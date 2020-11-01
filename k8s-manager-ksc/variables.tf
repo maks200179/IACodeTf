@@ -27,8 +27,8 @@ variable "map_roles" {
     },
     {
       rolearn  = "arn:aws:iam::411543714039:role/eks-managed-group-node-role"
-      username = "aws_cli"
-      groups   = ["system:masters"]
+      username = "terra"
+      groups   = ["system:nodes"]
     },
   ]
 }
@@ -48,8 +48,8 @@ variable "map_users" {
       groups   = ["system:masters"]
     },
     {
-      userarn  = "arn:aws:iam::411543714039:user/aws_cli"
-      username = "aws_cli"
+      userarn  = "arn:aws:iam::411543714039:user/terra"
+      username = "terra"
       groups   = ["system:masters"]
     },
 
