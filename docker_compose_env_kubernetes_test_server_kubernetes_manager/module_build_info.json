@@ -3,5 +3,6 @@
     "network_module_name": "aws_kubernetes_test_network_terraform_conf",
     "username"           : "centos",
     "swarm"              : "True",
-    "manager"            : "True"
+    "manager"            : "True",
+    "eks"                : "False"
 }      
