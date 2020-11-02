@@ -432,14 +432,13 @@ class postBuildServer(configFileIni):
                 return msg
             
             elif 'checkifEKS' in command:
-            #print (self.eks) 
-                if 'self.eks' in locals():
+                if 'eks' in dir(self):
                     if self.eks is True:
                         return True
                     else:
                         return False
                 else:
-                    return False        
+                    return False          
 
         
         elif 'getEksToken' in command:
