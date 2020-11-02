@@ -268,6 +268,7 @@ EOF
             helm install --wait --timeout 300s --set master.replicas=3,coordinating.service.type=NodePort elasticsearch  bitnami/elasticsearch
             
             helm install --wait --timeout 300s  --set service.type=NodePort,elasticsearch.hosts[0]=elasticsearch-elasticsearch-coordinating-only,elasticsearch.port=9200   kibana-es bitnami/kibana
+            #helm install --wait --timeout 300s  --set service.type=NodePort,elasticsearch.hosts[0]=elasticsearch-elasticsearch-coordinating-only,elasticsearch.port=9200,nodeSelector."az"="us-east-2a",persistence.storageClass="-",persistence.existingClaim=aws-pvc0   kibana-es bitnami/kibana
             
             kubectl apply -f /usr/src/iacode/moduls/iacode/k8s-manager-ksc/kibana-ingress.yaml
             
