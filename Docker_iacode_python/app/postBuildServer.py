@@ -431,14 +431,14 @@ class postBuildServer(configFileIni):
                 self.logging.writeLogWarning(msg)
                 return msg
             
-            elif 'checkifEKS' in command:
-                if 'eks' in dir(self):
-                    if self.eks is True:
-                        return True
-                    else:
-                        return False
+        elif 'checkifEKS' in command:
+            if 'eks' in dir(self):
+                if self.eks is True:
+                    return True
                 else:
-                    return False          
+                    return False
+            else:
+                return False          
 
         
         elif 'getEksToken' in command:
