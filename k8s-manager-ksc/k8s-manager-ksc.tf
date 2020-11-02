@@ -6,7 +6,7 @@ provider "aws" {
 locals {
   cluster_name = "test-eks-9chRfdVG"
   domain_name  = "xmaxfr.com"
-  key_name = "kubernetes_test_ssh_acess_key"
+  key_name = "k8s-nodes-key"
 }
 
 resource "tls_private_key" "kubernetes_test_key" {
