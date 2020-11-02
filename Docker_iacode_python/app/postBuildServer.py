@@ -430,14 +430,16 @@ class postBuildServer(configFileIni):
                 msg = 'the manager not installed or token not exist please check log'
                 self.logging.writeLogWarning(msg)
                 return msg
-
-        elif 'checkifEKS' in command:
-            print (self.eks) 
             
-            if self.eks is True:
-                return True
-            else:
-                return False
+            elif 'checkifEKS' in command:
+            #print (self.eks) 
+                if 'self.eks' in locals():
+                    if self.eks is True:
+                        return True
+                    else:
+                        return False
+                else:
+                    return False        
 
         
         elif 'getEksToken' in command:
