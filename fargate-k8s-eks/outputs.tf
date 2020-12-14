@@ -1,10 +1,8 @@
 data "template_file" "json_config" {
-    
+
     template = <<EOF
 {
     "endpoint": "${aws_eks_cluster.example.endpoint}",
-
-
     "cert"          : "${aws_eks_cluster.example.certificate_authority[0].data}"
     
 }

@@ -1,5 +1,3 @@
-
-
 provider "aws" {}
 
 
@@ -41,7 +39,7 @@ resource "aws_eks_fargate_profile" "example" {
   selector {
     namespace = "kube-system"
   }
-  
+
   selector {
     namespace = "default"
   }
