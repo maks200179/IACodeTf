@@ -142,27 +142,6 @@ class buildModule(QWidget , configFileIni ):
 
 
             if not 'network_terraform_conf' in module:
-                
-                #there will check if a module eks so deploy staf on it 
-                stdCheckifEKS = self.postbuildserver.mainBuildRemoveModule('checkifEKS', module)
-                
-                if stdCheckifEKS is True:
-                    self.textBrowserStd.append(('App: Deploy eks module %r') %(stdCheckifEKS))
-                    #try update config 
-                    stdUpdateK8Sconf = self.postbuildserver.mainBuildRemoveModule('getEksToken', module)
-                    self.textBrowserStd.append(stdUpdateK8Sconf)
-                    
-                    stdpostDeployK8S = self.postbuildserver.mainBuildRemoveModule('postDeployK8S', module)
-                    self.textBrowserStd.append(stdpostDeployK8S)
-                    
-
-                    continue
-
-                    
-
-
-
-
 
                 collectDataFromServerJsonConf = self.postbuildserver.mainBuildRemoveModule('collectModuleDataFromJsonAndCheckIfExist', module)
                 if collectDataFromServerJsonConf is not True:
@@ -286,19 +265,9 @@ class buildModule(QWidget , configFileIni ):
             QApplication.processEvents()
             #use aws creds and pass them to env vars 
             stdAwsCreds = self.postbuildserver.exportEnvAwsCredentials()
-            
             if stdAwsCreds is not True:
                 self.textBrowserStd.append(stdAwsCreds)
-            stdCheckifEKS = self.postbuildserver.mainBuildRemoveModule('checkifEKS', module)
             
-            if stdCheckifEKS is True:
-                self.textBrowserStd.append('App: Delete resorses from k8s')
-                #try update config 
-                stdDeleteResorsesK8S = self.postbuildserver.mainBuildRemoveModule('deleteResorsesK8S', module)
-                self.textBrowserStd.append(stdDeleteResorsesK8S)
-                
-
-
             self.textBrowserStd.append(("Destroying module %s") % module)
             stdterraform = self.awscreatemoduleterraform.brockerExecCommandTerraform('destroyTfModule',module)
             self.textBrowserStd.append(('Terraform: %s') %(stdterraform))

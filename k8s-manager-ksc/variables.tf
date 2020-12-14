@@ -1,5 +1,5 @@
 variable "region" {
-  default = "us-west-2"
+  default = "us-east-2"
 }
 
 variable "map_accounts" {
@@ -7,7 +7,6 @@ variable "map_accounts" {
   type        = list(string)
 
   default = [
-    "411543714039",
     "411543714039",
   ]
 }
@@ -22,9 +21,14 @@ variable "map_roles" {
 
   default = [
     {
-      rolearn  = "arn:aws:iam::411543714039:role/role1"
-      username = "terra_user"
+      rolearn  = "arn:aws:iam::411543714039:role/eks-managed-group-node-role"
+      username = "terra"
       groups   = ["system:masters"]
+    },
+    {
+      rolearn  = "arn:aws:iam::411543714039:role/eks-managed-group-node-role"
+      username = "system:node:{{EC2PrivateDNSName}}"
+      groups   = ["system:bootstrappers","system:nodes"]
     },
   ]
 }
@@ -39,14 +43,15 @@ variable "map_users" {
 
   default = [
     {
-      userarn  = "arn:aws:iam::411543714039:user/terra_user"
-      username = "user1"
+      userarn  = "arn:aws:iam::411543714039:user/terra"
+      username = "terra"
       groups   = ["system:masters"]
     },
     {
       userarn  = "arn:aws:iam::411543714039:user/terra_user"
-      username = "user2"
+      username = "terra_user"
       groups   = ["system:masters"]
     },
+
   ]
 }

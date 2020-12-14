@@ -7,6 +7,8 @@ while [[ ${1:0:2} == '--' ]] && [[ $# -ge 2 ]] ; do
     [[ $1 == '--docker_env' ]] && { docker_env="yes"; };
     [[ $1 == '--docker_compose_up' ]] && { docker_compose_up="yes"; };
     [[ $1 == '--init_swarm_manager' ]] && { init_swarm_manager="${2}"; };
+    [[ $1 == '--post_deploy_k8s' ]] && { post_deploy_k8s="${2}"; };
+    [[ $1 == '--delete_eks_all' ]] && { delete_eks_all="${2}"; };
     [[ $1 == '--rebuild_swarm_manager' ]] && { rebuild_swarm_manager="${2}"; };
     [[ $1 == '--install_db_crone_tab' ]] && { install_db_crone="${2}"; };
     [[ $1 == '--install_kube' ]] && { install_kube="${2}"; };
@@ -215,5 +217,130 @@ EOF
         
     fi
     
+    #another repo helm to deploy es using best practice bitnami
+    #helm repo add bitnami https://charts.bitnami.com/bitnami
+    #helm install --name elasticsearch --set name=elasticsearch,master.replicas=3,coordinating.service.type=LoadBalancer bitnami/elasticsearch
+
+    if  [[ ! -z ${delete_eks_all}  ]] ; then
+        if  [[ ! -z $(kubectl get all) ]] ; then
+            
+            
+            helm ls --all --short | xargs -L1 helm delete 
+            kubectl delete ingress kibana 
+            while [[  $(kubectl describe svc ingress-ingress-nginx-controller | grep Ingress: | awk '{ print $3 }') ]]
+            do
+              sleep 0.1
+            done
+            
+            #kubectl delete all --all 
+            kubectl delete pvc --all 
+            kubectl delete pv --all     
+            sleep 15
+                
+        fi
+        
+    fi
+
+
+
+
+
+    if  [[ $post_deploy_k8s == "yes"  ]] ; then
+        if  [[ ! -z $(helm version --short) ]] ; then
+            #add aws ingress 
+            #helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+            #helm install --wait --timeout 300s aws-ingress incubator/aws-alb-ingress-controller --set autoDiscoverAwsRegion=true --set autoDiscoverAwsVpcID=true --set clusterName=test-eks-9chRfdVG
+            
+            helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+            helm install ingress ingress-nginx/ingress-nginx
+            
+            
+            #helm repo add elastic https://helm.elastic.co
+            #helm install --wait --timeout 700s es-test1 elastic/elasticsearch
+            #helm upgrade --wait --timeout 600s --install --values /usr/src/iacode/moduls/iacode/k8s-manager-ksc/es-k8s-conf/master.yaml  es-test1 elastic/elasticsearch
+            #helm upgrade --wait --timeout 600s --install --values /usr/src/iacode/moduls/iacode/k8s-manager-ksc/es-k8s-conf/data.yaml    es-test1 elastic/elasticsearch
+            #helm upgrade --wait --timeout 600s --install --values /usr/src/iacode/moduls/iacode/k8s-manager-ksc/es-k8s-conf/client.yaml  es-test1 elastic/elasticsearch
+            
+            
+            
+            #another repo helm to deploy es using best practice bitnami
+            helm repo add bitnami https://charts.bitnami.com/bitnami
+            helm install --wait --timeout 300s --set master.replicas=3,coordinating.service.type=NodePort elasticsearch  bitnami/elasticsearch
+            
+            helm install --wait --timeout 300s  --set service.type=NodePort,elasticsearch.hosts[0]=elasticsearch-elasticsearch-coordinating-only,elasticsearch.port=9200   kibana-es bitnami/kibana
+            #helm install --wait --timeout 300s  --set service.type=NodePort,elasticsearch.hosts[0]=elasticsearch-elasticsearch-coordinating-only,elasticsearch.port=9200,nodeSelector."az"="us-east-2a",persistence.storageClass="-",persistence.existingClaim=aws-pvc0   kibana-es bitnami/kibana
+            
+            kubectl apply -f /usr/src/iacode/moduls/iacode/k8s-manager-ksc/kibana-ingress.yaml
+            
+            i=0
+            while [[ ! $(kubectl describe svc ingress-ingress-nginx-controller | grep Ingress: | awk '{ print $3 }') ]]
+            do
+              ((i++)) 
+              sleep 1
+              if [[ "$i" == '20' ]]; then
+                  break
+              fi
+            done
+            
+            alb_address=$(kubectl describe svc ingress-ingress-nginx-controller | grep Ingress: | awk '{ print $3 }')
+            echo "${alb_address}"
+            hosted_zone_id=$(aws route53 list-hosted-zones-by-name | grep xmaxfr.com | awk '{ print $3 }')
+            echo "${hosted_zone_id}"
+            record_set_id=$(aws route53 list-resource-record-sets --hosted-zone-id "${hosted_zone_id}" --query "ResourceRecordSets[?Name == 'kibana.xmaxfr.com.']" | grep "ALIASTARGET" | awk '{ print $4 }')
+            echo "${record_set_id}"
+            cat <<EOF > /usr/src/iacode/moduls/iacode/k8s-manager-ksc/route53.json
+{
+  "Comment": "Update record to reflect new DNSName of fresh deploy",
+  "Changes": [
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "AliasTarget": {
+            "HostedZoneId": "${record_set_id}", 
+            "EvaluateTargetHealth": false, 
+            "DNSName": "dualstack.${alb_address}"
+        }, 
+        "Type": "A", 
+        "Name": "kibana.xmaxfr.com."
+      }
+    }
+  ]
+}
+EOF
+            aws route53 change-resource-record-sets --hosted-zone-id "${hosted_zone_id}" --change-batch file:///usr/src/iacode/moduls/iacode/k8s-manager-ksc/route53.json
+
+            
+            record_set_id=$(aws route53 list-resource-record-sets --hosted-zone-id "${hosted_zone_id}" --query "ResourceRecordSets[?Name == 'es.xmaxfr.com.']" | grep "ALIASTARGET" | awk '{ print $4 }')
+            echo "${record_set_id}"
+            cat <<EOF > /usr/src/iacode/moduls/iacode/k8s-manager-ksc/route53.json
+{
+  "Comment": "Update record to reflect new DNSName of fresh deploy",
+  "Changes": [
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "AliasTarget": {
+            "HostedZoneId": "${record_set_id}", 
+            "EvaluateTargetHealth": false, 
+            "DNSName": "dualstack.${alb_address}"
+        }, 
+        "Type": "A", 
+        "Name": "es.xmaxfr.com."
+      }
+    }
+  ]
+}
+EOF
+            aws route53 change-resource-record-sets --hosted-zone-id "${hosted_zone_id}" --change-batch file:///usr/src/iacode/moduls/iacode/k8s-manager-ksc/route53.json
+
+
+
+        else 
+            
+            echo "helm not  installed."
+                
+        fi
+        
+    fi
     
     
