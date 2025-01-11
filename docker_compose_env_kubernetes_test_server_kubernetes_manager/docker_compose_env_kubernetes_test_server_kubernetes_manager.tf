@@ -250,7 +250,7 @@ resource "aws_instance" "i-centos-linux-kubernetes_manager_kubernetes_test" {
                                  "${aws_security_group.kubernetes_test-kubernetes_manager-sg-kubernetes-registry.id}",
                                  "${aws_security_group.kubernetes_test-kubernetes_manager-sg-kubernetes-2376.id}",
                                  "${aws_security_group.kubernetes_test-kubernetes_manager-sg-kubernetes-7946.id}",
-                                 "${aws_security_group.kubernetes_test-kubernetes_manager-sg-kubernetes-4789.id}"
+#                                 "${aws_security_group.kubernetes_test-kubernetes_manager-sg-kubernetes-4789.id}"
                                 ]
   count                       = "1"
   subnet_id                   = "${sort(data.aws_subnet_ids.kubernetes_test-subnet.ids)[0]}"
