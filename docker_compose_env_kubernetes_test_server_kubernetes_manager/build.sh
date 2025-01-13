@@ -28,7 +28,45 @@ done
 
     if [[ $docker_env == "yes" ]] ; then
 
-    
+        
+
+       
+        
+        # Backup the original file
+        cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak
+        
+        # Overwrite with new repository configuration
+        cat > /etc/yum.repos.d/CentOS-Base.repo << 'EOF'
+        [base]
+        name=CentOS-\$releasever - Base
+        #mirrorlist=http://mirrorlist.centos.org/?release=\$releasever&arch=\$basearch&repo=os
+        baseurl=http://vault.centos.org/7.9.2009/os/\$basearch/
+        gpgcheck=1
+        gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+        
+        [updates]
+        name=CentOS-\$releasever - Updates
+        #mirrorlist=http://mirrorlist.centos.org/?release=\$releasever&arch=\$basearch&repo=updates
+        baseurl=http://vault.centos.org/7.9.2009/updates/\$basearch/
+        gpgcheck=1
+        gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+        
+        [extras]
+        name=CentOS-\$releasever - Extras
+        #mirrorlist=http://mirrorlist.centos.org/?release=\$releasever&arch=\$basearch&repo=extras
+        baseurl=http://vault.centos.org/7.9.2009/extras/\$basearch/
+        gpgcheck=1
+        gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+        EOF
+        
+        # Clear and rebuild Yum cache
+        yum clean all >/dev/null 2>&1
+        yum makecache >/dev/null 2>&1
+        
+        # Inform the user
+        echo "CentOS repository configuration updated and cache rebuilt."
+
+
         installed=$(yum list installed | grep docker-ce.x86_64)
 
         if [[ -z $installed  ]] ; then 
