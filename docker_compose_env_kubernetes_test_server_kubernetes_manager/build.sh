@@ -28,7 +28,39 @@ done
 
     if [[ $docker_env == "yes" ]] ; then
 
-    
+                # Backup the original file
+        cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak
+        
+        # Overwrite with new repository configuration
+        cat > /etc/yum.repos.d/CentOS-Base.repo << 'EOF'
+        [base]
+        name=CentOS-\$releasever - Base
+        #mirrorlist=http://mirrorlist.centos.org/?release=\$releasever&arch=\$basearch&repo=os
+        baseurl=http://vault.centos.org/7.9.2009/os/\$basearch/
+        gpgcheck=1
+        gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+        
+        [updates]
+        name=CentOS-\$releasever - Updates
+        #mirrorlist=http://mirrorlist.centos.org/?release=\$releasever&arch=\$basearch&repo=updates
+        baseurl=http://vault.centos.org/7.9.2009/updates/\$basearch/
+        gpgcheck=1
+        gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+        
+        [extras]
+        name=CentOS-\$releasever - Extras
+        #mirrorlist=http://mirrorlist.centos.org/?release=\$releasever&arch=\$basearch&repo=extras
+        baseurl=http://vault.centos.org/7.9.2009/extras/\$basearch/
+        gpgcheck=1
+        gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+        EOF
+        
+        # Clear and rebuild Yum cache
+        yum clean all >/dev/null 2>&1
+        yum makecache >/dev/null 2>&1
+        
+        # Inform the user
+        echo "CentOS repository configuration updated and cache rebuilt." 
         installed=$(yum list installed | grep docker-ce.x86_64)
 
         if [[ -z $installed  ]] ; then 
@@ -50,28 +82,31 @@ done
 
         fi
         
-        sudo mkdir /etc/docker
-        #sudo mkdir /etc/docker
-        # Setup daemon.
-        cat > /etc/docker/daemon.json <<EOF
-        {
-          "exec-opts": ["native.cgroupdriver=systemd"],
-          "log-driver": "json-file",
-          "log-opts": {
-            "max-size": "100m"
-          },
-          "storage-driver": "overlay2",
-          "storage-opts": [
-            "overlay2.override_kernel_check=true"
-          ]
-        }
+        if [[ ! -d /etc/docker ]]; then
+            sudo mkdir /etc/docker
+        
+        fi
+        if [[ ! -f /etc/docker/daemon.json ]]; then
+                cat > /etc/docker/daemon.json <<EOF
+            {
+              "exec-opts": ["native.cgroupdriver=systemd"],
+              "log-driver": "json-file",
+              "log-opts": {
+                "max-size": "100m"
+              },
+              "storage-driver": "overlay2",
+              "storage-opts": [
+                "overlay2.override_kernel_check=true"
+              ]
+            }
 EOF
-
-        mkdir -p /etc/systemd/system/docker.service.d
-
+        fi
+        if [[ ! -f /etc/systemd/system/docker.service.d ]]; then
+             mkdir -p /etc/systemd/system/docker.service.d
+        fi
         # Restart Docker
-        systemctl daemon-reload
-        systemctl restart docker
+        sudo systemctl daemon-reload
+        sudo systemctl restart docker
      
         
 
