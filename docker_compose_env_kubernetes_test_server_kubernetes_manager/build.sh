@@ -50,23 +50,27 @@ done
 
         fi
         
-        sudo mkdir /etc/docker
-        #sudo mkdir /etc/docker
-        # Setup daemon.
-        cat > /etc/docker/daemon.json <<EOF
-        {
-          "exec-opts": ["native.cgroupdriver=systemd"],
-          "log-driver": "json-file",
-          "log-opts": {
-            "max-size": "100m"
-          },
-          "storage-driver": "overlay2",
-          "storage-opts": [
-            "overlay2.override_kernel_check=true"
-          ]
-        }
+        if [[ ! -d /etc/docker ]]; then
+            sudo mkdir /etc/docker
+        
+        fi
+        if [[ ! -f /etc/docker/daemon.json ]]; then
+                cat > /etc/docker/daemon.json <<EOF
+            {
+              "exec-opts": ["native.cgroupdriver=systemd"],
+              "log-driver": "json-file",
+              "log-opts": {
+                "max-size": "100m"
+              },
+              "storage-driver": "overlay2",
+              "storage-opts": [
+                "overlay2.override_kernel_check=true"
+              ]
+            }
 EOF
+    fi
 
+        
         mkdir -p /etc/systemd/system/docker.service.d
 
         # Restart Docker
