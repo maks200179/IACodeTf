@@ -19,11 +19,13 @@ resource "aws_lb_target_group" "tg" {
     healthy_threshold   = 2
     unhealthy_threshold = 2
   }
-}
-lifecycle {
+
+  lifecycle {
     prevent_destroy = false
   }
 }
+
+
 resource "aws_lb_listener" "http" {
   load_balancer_arn = aws_lb.alb.arn
   port              = 80
