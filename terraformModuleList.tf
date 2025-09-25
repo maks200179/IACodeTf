@@ -22,6 +22,6 @@ module "aws_kubernetes_test_network_terraform_conf" {
   source = "../moduls/iacode/single-serevr-docker-demon"
 } 
 
- module "ecs_example_ecs-prod" {
-  source = "../moduls/iacode/ecs_example_ecs-prod"
+ module "ecs_cluster_terraform" {
+  source = "../moduls/iacode/ecs_cluster_terraform"
 }
