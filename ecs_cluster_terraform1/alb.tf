@@ -11,6 +11,7 @@ resource "aws_lb_target_group" "tg" {
   port     = var.app_port
   protocol = "HTTP"
   vpc_id   = aws_vpc.this.id
+  target_type = "ip"
   health_check {
     path                = "/"
     matcher             = "200-399"
