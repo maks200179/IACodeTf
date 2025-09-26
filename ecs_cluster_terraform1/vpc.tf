@@ -8,6 +8,18 @@ resource "aws_internet_gateway" "gw" {
   tags   = { Name = "demo-igw" }
 }
 
+resource "aws_eip" "nat" {
+  vpc = true
+}
+
+resource "aws_nat_gateway" "gw" {
+  allocation_id = aws_eip.nat.id
+  subnet_id     = aws_subnet.public.id
+
+  tags = {
+    Name = "ecs-nat-gateway"
+  }
+}
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.this.id
 
