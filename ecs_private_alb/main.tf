@@ -246,9 +246,10 @@ resource "aws_ecs_service" "app" {
   
   # Ensure ALB exists first (http listener is always present)
   depends_on = [
-      aws_lb_target_group.tg,
-      aws_lb_listener.http_forward,
-      aws_lb_listener.http_redirect,
-      aws_lb_listener.https,
-]
+    aws_lb_target_group.tg,
+    aws_lb_listener.http_forward
+  ]
 }
+
+
+
