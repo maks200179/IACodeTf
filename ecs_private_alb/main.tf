@@ -57,7 +57,7 @@ resource "aws_route_table_association" "public_assoc" {
 
 # NAT Gateway for private subnets (ECS pulls images, etc.)
 resource "aws_eip" "nat" {
-  domain = "vpc"
+  
   tags = { Name = "ecs-demo-nat-eip" }
 }
 
