@@ -26,3 +26,6 @@ module "aws_kubernetes_test_network_terraform_conf" {
   source = "../moduls/iacode/ecs_cluster_terraform1"
 }
 
+ module "ecs_private_alb" {
+  source = "../moduls/iacode/ecs_private_alb"
+}
