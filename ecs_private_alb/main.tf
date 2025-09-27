@@ -242,7 +242,11 @@ resource "aws_ecs_service" "app" {
     container_name   = "app"
     container_port   = var.container_port
   }
-
+  
   # Ensure ALB exists first (http listener is always present)
-  depends_on = [aws_lb_listener.http_redirect]
+  depends_on = [
+    aws_lb_target_group.tg,
+    aws_lb_listener.http_redirect,
+    aws_lb_listener.https
+  ]
 }
