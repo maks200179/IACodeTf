@@ -165,19 +165,20 @@ resource "aws_lb_target_group" "tg" {
   }
 }
 
-# HTTP -> HTTPS redirect
-resource "aws_lb_listener" "http_redirect" {
+
+
+
+
+# When HTTPS is disabled, forward HTTP directly to ECS tasks
+resource "aws_lb_listener" "http_forward" {
+  count             = var.enable_https ? 0 : 1
   load_balancer_arn = aws_lb.alb.arn
   port              = 80
   protocol          = "HTTP"
 
   default_action {
-    type = "redirect"
-    redirect {
-      port        = "443"
-      protocol    = "HTTPS"
-      status_code = "HTTP_301"
-    }
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.tg.arn
   }
 }
 
@@ -245,8 +246,9 @@ resource "aws_ecs_service" "app" {
   
   # Ensure ALB exists first (http listener is always present)
   depends_on = [
-    aws_lb_target_group.tg,
-    aws_lb_listener.http_redirect,
-    aws_lb_listener.https
-  ]
+      aws_lb_target_group.tg,
+      aws_lb_listener.http_forward,
+      aws_lb_listener.http_redirect,
+      aws_lb_listener.https,
+]
 }
