@@ -26,6 +26,3 @@ module "aws_kubernetes_test_network_terraform_conf" {
   source = "../moduls/iacode/ecs_cluster_terraform1"
 }
 
- module "ecs-fargate-private-alb-https" {
-  source = "../moduls/ecs-fargate-private-alb-https"
-}
