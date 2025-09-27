@@ -13,7 +13,7 @@ variable "vpc_cidr" {
 variable "enable_https" {
   description = "Enable HTTPS listener on ALB. Set true only after you have a valid ACM certificate ARN."
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "acm_certificate_arn" {
